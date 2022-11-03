@@ -1,0 +1,220 @@
+<!-- Written By Jesus Macias -->
+<!-- Modified By .....       -->
+<!-- START OF HTML DOCUMENT-->
+<!doctype html>
+<html lang="en">
+
+    <!-- START OF HEAD for CSS, SCRIPTS and ETC -->
+    <head>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <title>Account Page Prototype</title>
+
+        <!-- MATERIAL CDN -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" crossorigin="anonymous">
+        
+        <!-- SCRIPT TAG-->
+        <script defer src="polls.bundle.js"></script>
+
+    </head>
+    <!-- END OF HEAD-->
+
+    <!-- START OF Navigation -->
+    <nav>
+
+        <!-- START OF Row Containing Navigation Components -->
+        <div class="row bg-primary justify-content-center" id="Navigation" style="text-align: center; margin: 0;">
+
+            <!-- START OF Navigation Buttons -->
+            <ul class="nav nav-pills justify-content-center">
+
+                <!-- START OF Polls Nav Item -->
+                <li id="pollsNavItem" class="nav-item" style="margin-top: 10px">
+
+                    <!-- START OF Polls Link Element for Redirection -->
+                    <a id="pollLink" href="./polls.html" class="nav-link" style="color:white;">
+
+                        <!-- START OF Row for Polls Nav Item Display-->
+                        <div class ="row justify-content-center">
+
+                            <div class="col align-self-center">
+                                <span class="material-icons">ballot</span>
+                            </div>
+
+                            <div class="col align-self-center">
+                                <h3>Polls</h3>
+                            </div>
+
+                        </div>
+                        <!-- END OF Row for Polls Nav Item Display-->
+
+                    </a>
+                     <!-- END OF Polls Link Element for Redirection -->
+
+                </li>
+                <!-- END OF Polls Nav Item -->
+
+                <!-- LOGO -->
+                <a id="homeLink" href="./index.html" class="nav-link" style="color:white;">
+                    <img style="padding: 10px;" src="./pics/logo-white.png" alt="Logo" width="150" height="75">
+                </a> 
+
+                <!-- START OF Account Page Nav Item -->
+                <li id="accountPageNavItem" class="nav-item" style="margin-top: 10px">
+
+                    <!-- START OF Account Page Link Element for Redirection -->
+                    <a id="accountPageLink" href="./accountPage.html" class="nav-link" style="color:white;">
+
+                        <!-- START OF Row for Account Page Nav Item Display-->
+                        <div class ="row justify-content-center">
+                            
+                            <div class="col align-self-center">
+                                <h3>Account</h3>
+                            </div>
+
+                            <div class="col align-self-center">
+                                <span class="material-icons">account_box</span>
+                            </div>
+
+                        </div>
+                        <!-- END OF Row for Account Page Nav Item Display-->
+
+                    </a>
+                    <!-- END OF Account Page Element for Redirection -->
+
+                </li>
+                <!-- END OF Account Page Nav Item -->
+
+            </ul>
+            <!-- END OF Navigation Buttons -->
+
+        </div>
+        <!-- END OF Row Containing Navigation Components -->
+
+    </nav>
+    <!-- END OF Navigation -->
+
+    <!-- START OF MAIN HOME PAGE -->
+    <body>
+        <!-- START OF Container To Hold Elements -->
+        <!-- This Page uses BootStraps Structure Control of Div's made of class "Row" and "Col"-->
+        <!-- An Example: <div class="row"> </div> is one row and if columns were needed you must add seperate <div class="col"</div> within the Div as Row to add wanted Columns-->
+        <div class="container">
+
+            <!-- START OF Row for Button To Create New Poll -->
+            <div class="row justify-content-center">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-info btn-lg" id="createPollBtn" style="margin: 2rem;padding: 2rem;">
+                    Create Poll
+                </button>
+            </div>
+            <!-- END OF Row for Button To Create New Poll -->
+            
+            
+            <!-- START OF Create New Poll Modal -->
+            <div class="modal fade" id="createPollModal" tabindex="-1" role="dialog" aria-labelledby="createPollModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <div class="row justify-content-center">
+                            <h2 class="display-4">Poll Creator</h2>
+                        </div>
+
+                        <div class="modal-body">
+                        
+                            <!-- START OF Row to contain Poll Prototype-->
+                            <div class="row justify-content-center">
+                                <!-- START OF Voting Poll Example-->
+                                <div class="bg-white rounded-lg p-5 shadow">
+
+                                    <!-- START OF Poll Start Time Frame -->
+                                    <div class="row text-center mt-4">
+                                        <div class="col-6">
+                                            <div class="h5 font-weight-bold mb-0 text-primary">
+                                                <input type="date" id="startDate" name="startDate">
+                                            </div>
+                                            <span class="small text-gray">Start Date</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="h5 font-weight-bold mb-0 text-primary">
+                                                <input type="time" id="startTime" name="startTime" required>
+                                            </div>
+                                            <span class="small text-gray">Start Time</span>
+                                        </div>
+                                    </div>
+                                    <!-- END OF Voting Poll Start Time Frame-->
+
+                                    <br>
+
+                                    <!-- START OF Poll Selections -->
+                                    <div class="bg-white rounded-lg p-5 shadow">
+                                        <!-- Add Buttons To Add Selections and Add Selection Names-->
+                                    </div>
+                                    <!-- END OF Poll Selections -->
+                        
+                                    <!-- START OF Poll End Time Frame -->
+                                    <div class="row text-center mt-4">
+                                        <div class="col-6">
+                                            <div class="h5 font-weight-bold mb-0 text-danger">
+                                                <input type="date" id="endDate" name="endDate">
+                                            </div>
+                                            <span class="small text-gray">Closing Date</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="h5 font-weight-bold mb-0 text-danger">
+                                                <input type="time" id="endTime" name="endTime" required>
+                                            </div>
+                                            <span class="small text-gray">Closing Time</span>
+                                        </div>
+                                    </div>
+                                    <!-- END OF Poll End Time Frame -->
+
+                                </div>
+                                <!-- END OF Poll Selection Example-->
+
+                            </div>
+                            <!-- END OF Row to contain Poll Prototype-->
+                  
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Publish Poll</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- START OF Testing of Admin Accounts View -->
+            <table class="table table-hover" id="testingTable">
+                <tr class="header thead-dark">
+                    <th>Poll Name</th>
+                    <th>Poll Owner</th>
+                    <th>Start Date</th>
+                    <th>Start Time</th>
+                    <th>Selections</th>
+                    <th>Total Votes</th>
+                    <th>Viewing Status</th>
+                    <th>Percentages</th>
+                    <th>End Date</th>
+                    <th>End Time</th>
+                </tr>
+            </table>
+            <!-- END OF Testing Of Admin Accounts View-->
+            
+        </div>
+        <!-- END OF Container To Hold Elements -->
+
+    </body>
+    <!-- END OF HOME PAGE-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</html>
+<!-- END OF HTML DOCUMENT-->

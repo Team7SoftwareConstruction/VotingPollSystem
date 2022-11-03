@@ -1,0 +1,129 @@
+<!-- Written By Jesus Macias -->
+<!-- Modified By .....       -->
+<!-- START OF HTML DOCUMENT-->
+<!doctype html>
+<html lang="en">
+
+    <!-- START OF HEAD for CSS, SCRIPTS and ETC -->
+    <head>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <title>Account Page Prototype</title>
+
+        <!-- MATERIAL CDN -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" crossorigin="anonymous">
+        
+        <!-- SCRIPT TAG-->
+        <script defer src="accountPage.bundle.js"></script>
+
+    </head>
+    <!-- END OF HEAD-->
+
+    <!-- START OF Navigation -->
+    <nav>
+
+        <!-- START OF Row Containing Navigation Components -->
+        <div class="row bg-primary justify-content-center" id="Navigation" style="text-align: center; margin: 0;">
+
+            <!-- START OF Navigation Buttons -->
+            <ul class="nav nav-pills justify-content-center">
+
+                <!-- START OF Polls Nav Item -->
+                <li id="pollsNavItem" class="nav-item" style="margin-top: 10px">
+
+                    <!-- START OF Polls Link Element for Redirection -->
+                    <a id="pollLink" href="./polls.html" class="nav-link" style="color:white;">
+
+                        <!-- START OF Row for Polls Nav Item Display-->
+                        <div class ="row justify-content-center">
+
+                            <div class="col align-self-center">
+                                <span class="material-icons">ballot</span>
+                            </div>
+
+                            <div class="col align-self-center">
+                                <h3>Polls</h3>
+                            </div>
+
+                        </div>
+                        <!-- END OF Row for Polls Nav Item Display-->
+
+                    </a>
+                     <!-- END OF Polls Link Element for Redirection -->
+
+                </li>
+                <!-- END OF Polls Nav Item -->
+
+                <!-- LOGO -->
+                <a id="homeLink" href="./index.html" class="nav-link" style="color:white;">
+                    <img style="padding: 10px;" src="./pics/logo-white.png" alt="Logo" width="150" height="75">
+                </a> 
+
+                <!-- START OF Account Page Nav Item -->
+                <li id="accountPageNavItem" class="nav-item" style="margin-top: 10px">
+
+                    <!-- START OF Account Page Link Element for Redirection -->
+                    <a id="accountPageLink" href="./accountPage.html" class="nav-link" style="color:white;">
+
+                        <!-- START OF Row for Account Page Nav Item Display-->
+                        <div class ="row justify-content-center">
+                            
+                            <div class="col align-self-center">
+                                <h3>Account</h3>
+                            </div>
+
+                            <div class="col align-self-center">
+                                <span class="material-icons">account_box</span>
+                            </div>
+
+                        </div>
+                        <!-- END OF Row for Account Page Nav Item Display-->
+
+                    </a>
+                    <!-- END OF Account Page Element for Redirection -->
+
+                </li>
+                <!-- END OF Account Page Nav Item -->
+
+            </ul>
+            <!-- END OF Navigation Buttons -->
+
+        </div>
+        <!-- END OF Row Containing Navigation Components -->
+
+    </nav>
+    <!-- END OF Navigation -->
+
+    <!-- START OF MAIN HOME PAGE -->
+    <body>
+        <!-- START OF Container To Hold Elements -->
+        <!-- This Page uses BootStraps Structure Control of Div's made of class "Row" and "Col"-->
+        <!-- An Example: <div class="row"> </div> is one row and if columns were needed you must add seperate <div class="col"</div> within the Div as Row to add wanted Columns-->
+        <div class="container">
+
+            <!-- START OF Testing of Admin Accounts View -->
+            <table class="table table-hover" id="accountsTable">
+                <tr class="header thead-dark">
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Total Polls</th>
+                    <th>InActive Polls</th>
+                    <th>Active Polls</th>
+                </tr>
+            </table>
+            <!-- END OF Testing Of Admin Accounts View-->
+            
+        </div>
+        <!-- END OF Container To Hold Elements -->
+
+    </body>
+    <!-- END OF HOME PAGE-->
+</html>
+<!-- END OF HTML DOCUMENT-->
