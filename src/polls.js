@@ -5,7 +5,7 @@ import { addDoc } from "firebase/firestore";
 import { logged_user, updateUserDoc } from "./auth";
 import { addTableData, displayModal, pollsRef } from "./database";
 
-const colNames = ['pollName', 'owner', 'startDate', 'startTime', 'selections', 'totalVotes', 'public', 'viewPercent', 'endDate', 'endTime'];
+const colNames = ['pollName', 'owner', 'startDate', 'startTime', 'selections', 'totalVotes', 'active', 'public', 'viewPercent', 'endDate', 'endTime'];
 
 addTableData(pollsRef, 'pollsTable', colNames);
 
