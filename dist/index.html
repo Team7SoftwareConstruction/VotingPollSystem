@@ -72,8 +72,9 @@
 
     <!-- START OF Navigation -->
     <nav>
+
         <!-- START OF Row Containing Navigation Components -->
-        <div class="row bg-primary justify-content-center" id="Navigation" style="text-align: center; margin: 0;">
+        <div class="row bg-primary justify-content-center shadow" id="Navigation" style="text-align: center; margin: 0;">
 
             <!-- START OF Navigation Buttons -->
             <ul class="nav nav-pills justify-content-center">
@@ -102,10 +103,8 @@
                             </div>
                         </div>
                         <!-- END OF Row for Polls Nav Item Display-->
-
                     </a>
-                     <!-- END OF Polls Link Element for Redirection -->
-
+                    <!-- END OF Polls Link Element for Redirection -->
                 </li>
                 <!-- END OF Polls Nav Item -->
 
@@ -130,18 +129,15 @@
                             </div>
                         </div>
                         <!-- END OF Row for Account Page Nav Item Display-->
-
                     </a>
-                        <!-- END OF Account Page Element for Redirection -->
-
+                    <!-- END OF Account Page Element for Redirection -->
                 </li>
                 <!-- END OF Account Page Nav Item -->
 
                 <div class="col align-self-center">
                     <button class="btn-light btn-md" id ="loginBtn">
                       <p class="material-icons">person</p><p>Sign In</p></button>
-                  </div>
-  
+                </div>
 
             </ul>
             <!-- END OF Navigation Buttons -->
@@ -149,17 +145,60 @@
         </div>
         <!-- END OF Row Containing Navigation Components -->
 
+        <!-- START OF Account User Information -->
+        <div class="container-fluid shadow" id="accountInfoContainer" style="display: none;">
+
+            <!-- START OF Change/Sign off Buttons and Email Display -->
+            <div class="row bg-dark">
+                <div class="col-sm align-self-center text-center" style="color:white; margin:.25rem">
+                    <button class="btn btn-warning btn-sm" id="changeUserBtn" type="submit"><h6>CHANGE USER</h6></button>
+                </div>
+                <div class="col-sm align-self-center text-center">
+                    <h6 id="accountEmail" style="color:white; margin:.5rem">Itschopchewy@gmail.com</h6>
+                </div>
+                <div class="col-sm align-self-center text-center" style="color:white; margin:.25rem">
+                    <form id="signOutLive">
+                        <button class="btn btn-danger btn-sm" id="signOutbtn" type="submit"><h6>LOGOUT</h6></button>
+                    </form>
+                </div>
+            </div>
+            <!-- END OF Change/Sign off Buttons and Email Display -->
+    
+            <!-- START OF Progress to show Active/InActive/Total Polls Left of Signed In User -->
+            <div class="row bg-dark justify-content-center">
+                <div class="col ">
+                    <div class="progress">
+                        <div class="progress-bar-striped progress-bar-animated bg-warning text-center" role="progressbar" style="width: 10%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="accountActivePolls"> 
+                            <p style="font-size: 8px;" id="activePollsLabel">10 Active</p>
+                        </div>
+                        <div class="progress-bar-striped progress-bar-animated bg-danger text-center" role="progressbar" style="width: 5%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="accountInactivePolls">
+                            <p style="font-size: 8px; color:white;" id="inactivePollsLabel">5 Inactive</p>
+                        </div>
+                        <div class="progress-bar-striped progress-bar-animated bg-dark text-center" role="progressbar" style="width: 85%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" id="accountTotalPollsLeft">
+                            <p style="font-size: 8px; color:white" id="totalPollsLeftLabel">85 Left</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF Progress to show Active/InActive/Total Polls Left of Signed In User -->
+
+        </div>
+        <!-- END OF Account User Information -->
+        
     </nav>
     <!-- END OF Navigation -->
 
     <!-- START OF MAIN HOME PAGE -->
     <body>
+
         <!-- START OF Container To Hold Elements -->
         <!-- This Page uses BootStraps Structure Control of Div's made of class "Row" and "Col"-->
         <!-- An Example: <div class="row"> </div> is one row and if columns were needed you must add seperate <div class="col"</div> within the Div as Row to add wanted Columns-->
         <div class="container-fluid">
+
             <!-- START OF Row to contain Poll Prototype-->
             <div class="row">
+
                 <!-- START OF Voting Poll Example-->
                 <div class="bg-white rounded-lg p-5 shadow">
 
@@ -216,8 +255,10 @@
                         </div>
                     </div>
                     <!-- END OF Poll End Time Frame -->
+
                 </div>
                 <!-- END OF Poll Selection Example-->
+
             </div>
             <!-- END OF Row to contain Poll Prototype-->
 
@@ -231,7 +272,6 @@
             
         </div>
         <!-- END OF Container To Hold Elements -->
-        <!-- Optional JavaScript -->
 
     </body>
     <!-- END OF HOME PAGE-->

@@ -24,14 +24,68 @@
     </head>
     <!-- END OF HEAD-->
 
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="register" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-light">
+                <!-- Modal content -->
+                <form id="signUpLive" style="text-align: center; margin: auto; width: 220px;" class="p-3">
+                    <h3 style="color:black;">Register</h3>
+                    <label style="color:black;" for="email">Email</label>
+                    <input type="email" id="email" required><br>
+                    <small id="emailHelp" class="form-text text-white">We'll never share your email.</small>
+                    <hr>
+                    <label style="color:black;" for="password">Password</label>
+                    <input type="password" id="signUpPassword" minlength="6" maxlength="16" required><br><input type="checkbox" onclick="showPass('signUpPassword')"><span style="color:black; font-size: small;"> Show Password</span>
+                    <hr>
+                    <label style="color:black;" for="phone">Phone Number</label><br>
+                    <input type="tel" id="phone" name="phone" placeholder="915-000-0000" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required><br><hr>
+                    <label style="color:black;" for="fName">First Name</label>
+                    <input type="text" id="fName" minlength="1" maxlength="750"required><br><hr>
+                    <label style="color:black;" for="lName">Last Name</label>
+                    <input type="text" id="lName"minlength="1" maxlength="700"required><br><hr>
+                    <button type="submit" class="btn-lg btn-primary">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Sign In Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="signUpModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content bg-light">
+                <!-- Modal content -->
+                <form id="loginLive" style="text-align: center; margin: auto; width: 220px;" class="p-3">
+                    <h3 style="color:black;">Sign In</h3>
+                    <label style="color:black;" for="email">Email</label>
+                    <input type="email" id="email" required><br>
+                    <hr>
+                    <label style="color:black;" for="password">Password</label>
+                    <input type="password" id="signInPassword" required><br><input type="checkbox" onclick="showPass('signInPassword')"><span style="color:black; font-size: small;"> Show Password</span>
+                    <hr>
+                    <button type="submit" class="btn-lg btn-primary">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- START OF Navigation -->
     <nav>
 
         <!-- START OF Row Containing Navigation Components -->
-        <div class="row bg-primary justify-content-center" id="Navigation" style="text-align: center; margin: 0;">
+        <div class="row bg-primary justify-content-center shadow" id="Navigation" style="text-align: center; margin: 0;">
 
             <!-- START OF Navigation Buttons -->
             <ul class="nav nav-pills justify-content-center">
+
+   
+                <div class="col align-self-center">
+                    <!--- Form to sign up --->
+                    <button class="btn-light btn-md" id ="registerBtn">
+                        <p class="material-icons">person_add</p><p>Register</p></button>
+                </div>
+        
 
                 <!-- START OF Polls Nav Item -->
                 <li id="pollsNavItem" class="nav-item" style="margin-top: 10px">
@@ -41,21 +95,16 @@
 
                         <!-- START OF Row for Polls Nav Item Display-->
                         <div class ="row justify-content-center">
-
                             <div class="col align-self-center">
                                 <span class="material-icons">ballot</span>
                             </div>
-
                             <div class="col align-self-center">
                                 <h3>Polls</h3>
                             </div>
-
                         </div>
                         <!-- END OF Row for Polls Nav Item Display-->
-
                     </a>
-                     <!-- END OF Polls Link Element for Redirection -->
-
+                    <!-- END OF Polls Link Element for Redirection -->
                 </li>
                 <!-- END OF Polls Nav Item -->
 
@@ -72,23 +121,23 @@
 
                         <!-- START OF Row for Account Page Nav Item Display-->
                         <div class ="row justify-content-center">
-                            
                             <div class="col align-self-center">
                                 <h3>Account</h3>
                             </div>
-
                             <div class="col align-self-center">
                                 <span class="material-icons">account_box</span>
                             </div>
-
                         </div>
                         <!-- END OF Row for Account Page Nav Item Display-->
-
                     </a>
                     <!-- END OF Account Page Element for Redirection -->
-
                 </li>
                 <!-- END OF Account Page Nav Item -->
+
+                <div class="col align-self-center">
+                    <button class="btn-light btn-md" id ="loginBtn">
+                      <p class="material-icons">person</p><p>Sign In</p></button>
+                </div>
 
             </ul>
             <!-- END OF Navigation Buttons -->
@@ -96,6 +145,46 @@
         </div>
         <!-- END OF Row Containing Navigation Components -->
 
+        <!-- START OF Account User Information -->
+        <div class="container-fluid shadow" id="accountInfoContainer" style="display: none;">
+
+            <!-- START OF Change/Sign off Buttons and Email Display -->
+            <div class="row bg-dark">
+                <div class="col-sm align-self-center text-center" style="color:white; margin:.25rem">
+                    <button class="btn btn-warning btn-sm" id="changeUserBtn" type="submit"><h6>CHANGE USER</h6></button>
+                </div>
+                <div class="col-sm align-self-center text-center">
+                    <h6 id="accountEmail" style="color:white; margin:.5rem">Itschopchewy@gmail.com</h6>
+                </div>
+                <div class="col-sm align-self-center text-center" style="color:white; margin:.25rem">
+                    <form id="signOutLive">
+                        <button class="btn btn-danger btn-sm" id="signOutbtn" type="submit"><h6>LOGOUT</h6></button>
+                    </form>
+                </div>
+            </div>
+            <!-- END OF Change/Sign off Buttons and Email Display -->
+    
+            <!-- START OF Progress to show Active/InActive/Total Polls Left of Signed In User -->
+            <div class="row bg-dark justify-content-center">
+                <div class="col ">
+                    <div class="progress">
+                        <div class="progress-bar-striped progress-bar-animated bg-warning text-center" role="progressbar" style="width: 10%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="accountActivePolls"> 
+                            <p style="font-size: 8px;" id="activePollsLabel">10 Active</p>
+                        </div>
+                        <div class="progress-bar-striped progress-bar-animated bg-danger text-center" role="progressbar" style="width: 5%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="accountInactivePolls">
+                            <p style="font-size: 8px; color:white;" id="inactivePollsLabel">5 Inactive</p>
+                        </div>
+                        <div class="progress-bar-striped progress-bar-animated bg-dark text-center" role="progressbar" style="width: 85%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" id="accountTotalPollsLeft">
+                            <p style="font-size: 8px; color:white" id="totalPollsLeftLabel">85 Left</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF Progress to show Active/InActive/Total Polls Left of Signed In User -->
+
+        </div>
+        <!-- END OF Account User Information -->
+        
     </nav>
     <!-- END OF Navigation -->
 
@@ -115,83 +204,155 @@
             </div>
             <!-- END OF Row for Button To Create New Poll -->
             
-            
-            <!-- START OF Create New Poll Modal -->
-            <div class="modal fade" id="createPollModal" tabindex="-1" role="dialog" aria-labelledby="createPollModal" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
+            <form id="createPollForm">
+                <!-- START OF Create New Poll Modal -->
+                <div class="modal fade" id="createPollModal" tabindex="-1" role="dialog" aria-labelledby="createPollModal" aria-hidden="true">
+                    
+                    <div class="modal-dialog" role="document">
 
-                        <div class="row justify-content-center">
-                            <h2 class="display-4">Poll Creator</h2>
-                        </div>
+                        <div class="modal-content">
 
-                        <div class="modal-body">
-                        
-                            <!-- START OF Row to contain Poll Prototype-->
                             <div class="row justify-content-center">
-                                <!-- START OF Voting Poll Example-->
-                                <div class="bg-white rounded-lg p-5 shadow">
+                                <h2 class="display-4">Poll Creator</h2>
+                            </div>
 
-                                    <!-- START OF Poll Start Time Frame -->
-                                    <div class="row text-center mt-4">
-                                        <div class="col-6">
-                                            <div class="h5 font-weight-bold mb-0 text-primary">
-                                                <input type="date" id="startDate" name="startDate">
-                                            </div>
-                                            <span class="small text-gray">Start Date</span>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="h5 font-weight-bold mb-0 text-primary">
-                                                <input type="time" id="startTime" name="startTime" required>
-                                            </div>
-                                            <span class="small text-gray">Start Time</span>
-                                        </div>
-                                    </div>
-                                    <!-- END OF Voting Poll Start Time Frame-->
-
-                                    <br>
-
-                                    <!-- START OF Poll Selections -->
+                            <div class="modal-body">
+                                
+                                <!-- START OF Row to contain Poll Prototype-->
+                                <div class="row justify-content-center">
+                                    <!-- START OF Voting Poll Example-->
                                     <div class="bg-white rounded-lg p-5 shadow">
-                                        <!-- Add Buttons To Add Selections and Add Selection Names-->
-                                    </div>
-                                    <!-- END OF Poll Selections -->
-                        
-                                    <!-- START OF Poll End Time Frame -->
-                                    <div class="row text-center mt-4">
-                                        <div class="col-6">
-                                            <div class="h5 font-weight-bold mb-0 text-danger">
-                                                <input type="date" id="endDate" name="endDate">
-                                            </div>
-                                            <span class="small text-gray">Closing Date</span>
+                                        
+                                        <div class="row justify-content-center">
+                                            <label style="color:black;" for="pollName">Poll Name</label>
+                                            
                                         </div>
-                                        <div class="col-6">
-                                            <div class="h5 font-weight-bold mb-0 text-danger">
-                                                <input type="time" id="endTime" name="endTime" required>
-                                            </div>
-                                            <span class="small text-gray">Closing Time</span>
+                                        <div class="row justify-content-center">
+                                            <input type="text" id="pollName" required><br>
                                         </div>
+                                    
+                                        <!-- START OF Poll Start Time Frame -->
+                                        <div class="row text-center mt-4">
+                                            <div class="col-6">
+                                                <div class="h5 font-weight-bold mb-0 text-primary">
+                                                    <input type="date" id="startDate" name="startDate" required>
+                                                </div>
+                                                <span class="small text-gray">Start Date</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="h5 font-weight-bold mb-0 text-primary">
+                                                    <input type="time" id="startTime" name="startTime" required>
+                                                </div>
+                                                <span class="small text-gray">Start Time</span>
+                                            </div>
+                                        </div>
+                                        <!-- END OF Voting Poll Start Time Frame-->
+
+                                        <br>
+
+                                        <!-- START OF Poll Selections -->
+                                        <div class="bg-white rounded-lg p-5 shadow">
+                                            <!-- Add Buttons To Add Selections and Add Selection Names-->
+                                                <div class="">
+                                                    <div class="col-lg-12">
+                                                        <div id="row">
+                                                            <div class="input-group m-3">
+                                                                <input type="text"
+                                                                    id="sel0" name="sel0" required>
+                                                            </div>
+                                                        </div>
+                                                        <div id="row">
+                                                            <div class="input-group m-3">
+                                                                <input type="text"
+                                                                    id="sel1" name="sel1" required>
+                                                            </div>
+                                                        </div>
+                                    
+                                                        <div id="newinput"></div>
+                                                        <button id="rowAdder" type="button"
+                                                            class="btn btn-dark">
+                                                            <span class="bi bi-plus-square-dotted">
+                                                            </span> ADD
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                        <!-- END OF Poll Selections -->
+                            
+                                        <!-- START OF Poll End Time Frame -->
+                                        <div class="row text-center mt-4">
+                                            <div class="col-6">
+                                                <div class="h5 font-weight-bold mb-0 text-danger">
+                                                    <input type="date" id="endDate" name="endDate" required>
+                                                </div>
+                                                <span class="small text-gray">Closing Date</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="h5 font-weight-bold mb-0 text-danger">
+                                                    <input type="time" id="endTime" name="endTime" required>
+                                                </div>
+                                                <span class="small text-gray">Closing Time</span>
+                                            </div>
+                                        </div>
+                                        <!-- END OF Poll End Time Frame -->
+
                                     </div>
-                                    <!-- END OF Poll End Time Frame -->
+                                    <!-- END OF Poll Selection Example-->
 
                                 </div>
-                                <!-- END OF Poll Selection Example-->
+                                <!-- END OF Row to contain Poll Prototype-->
 
+                                <fieldset class="form-group" style="margin: 2rem;">
+                                    <div class="row">
+                                      <legend class="col-form-label col-sm-2 pt-0">Viewing Status</legend>
+                                      <div class="col-sm-10">
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="viewStatus" id="viewStatus1" value="true" checked>
+                                          <label class="form-check-label" for="viewStatus1">
+                                            Public
+                                          </label>
+                                        </div>
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="viewStatus" id="viewStatus2" value="false">
+                                          <label class="form-check-label" for="viewStatus2">
+                                            Private
+                                          </label>
+                                        </div>
+                                    </div>
+                                  </fieldset>
+
+                                  <fieldset class="form-group" style="margin: 2rem;">
+                                    <div class="row">
+                                      <legend class="col-form-label col-sm-2 pt-0">Show Percent</legend>
+                                      <div class="col-sm-10">
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="viewPercent" id="viewPercent1" value="true" checked>
+                                          <label class="form-check-label" for="viewPercent1">
+                                            On
+                                          </label>
+                                        </div>
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="viewPercent" id="viewPercent2" value="false">
+                                          <label class="form-check-label" for="viewPercent2">
+                                            Off
+                                          </label>
+                                        </div>
+                                    </div>
+                                  </fieldset>
                             </div>
-                            <!-- END OF Row to contain Poll Prototype-->
-                  
-                        </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Publish Poll</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" id="publishPollBtn">Publish Poll</button>
+                            </div>   
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
+            
 
-            <!-- START OF Testing of Admin Accounts View -->
-            <table class="table table-hover" id="testingTable">
+            <!-- START OF Testing of All Polls In System -->
+            <table class="table table-hover" id="pollsTable">
                 <tr class="header thead-dark">
                     <th>Poll Name</th>
                     <th>Poll Owner</th>
@@ -199,8 +360,8 @@
                     <th>Start Time</th>
                     <th>Selections</th>
                     <th>Total Votes</th>
-                    <th>Viewing Status</th>
-                    <th>Percentages</th>
+                    <th>isPublic</th>
+                    <th>showPercents</th>
                     <th>End Date</th>
                     <th>End Time</th>
                 </tr>

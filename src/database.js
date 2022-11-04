@@ -1,7 +1,7 @@
 console.log("Page is running Database Js v1.0");
 
 import {
-    getFirestore, collection, query, getDocs
+    getFirestore, collection, query, getDocs, where
 } from 'firebase/firestore';
 
 
@@ -32,7 +32,7 @@ const firebaseConfig = {
   const accountsRef = collection(db, "accountTesting")
 
   // Export References to use outside of this JavaScript File
-  export { pollsRef, accountsRef}
+  export { pollsRef, accountsRef, app, db}
 
   // Master Function to add Table Data based on Ref, Table Name, and Column Headers
   export function addTableData(collectionRef, tableName, colNames) {
@@ -76,5 +76,25 @@ const firebaseConfig = {
         modalIn.hide()
     }
   }
+
+  /*  Written and Modified By Jesus
+    This function is used to return a query collection of specified Collection Name for example "collectionArrs_v2".
+    A query is done using the specified db and collection name using,
+    where("Destination", "==", "ORD") => where(whereVal, whereCompare, whereCompareVal)
+    
+    To explain the process, this documentation was written,
+    whereVal -> The Value in which you want to see if every document in the collection has for example:
+    whereVal = "Destination", this is saying you want the particular Destination of each Document.
+    whereCompare -> The value in which you want to get the comparison for example:
+    whereCompare = "==", this is saying you want the particular whereVal to == something, 
+    
+    whereCompareVal -> The value that specifies what the whereVal will be compared to using whereCompare Value
+    whereCompareVal = "ORD", this is saying you want all documents of the particular whereVal to whereCompare to ORD.
+    Example using the values below, going through the specified collection the only documents getting a snapshot are
+    the ones where the field of Destination is equal to ORD
+*/
+export function loadData(collectionRef, whereVal, whereCompare, whereCompareVal) {
+    return query(collectionRef, where(whereVal, whereCompare, whereCompareVal));
+}
   
 
