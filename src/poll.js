@@ -10,31 +10,51 @@ export default class Poll {
         let htmlPollSelections = "<div class='bg-white rounded-lg p-5 shadow'>";
         let htmlPass;
         let owner;
+        let header;
+        header = "<div class='row justify-content-center'><h3>" + pollData.pollName + "</h3></div>"
+        
+        let hasVotedLabel;
+        let hasVotedName;
         let hasVoted = false;
         pollData.voters.forEach(voter => {
-            if(Object.values(voter).includes(email))
+            if(Object.values(voter).includes(email)) {
                 hasVoted = true;
+                hasVotedName = voter['selectionName'];
+            }
         });
             pollData.selections.forEach(selection => {
                 let name = selection.selectionName
                 let sel;
-                if(pollData.owner == email)
-                    owner = "<span class='badge badge-pill badge-warning'>Owner</span>"
-                else
+                let selVotes;
+                if(pollData.owner == email) {
+                    owner = "<div class='row justify-content-center'><span class='badge badge-pill badge-warning'>Owner</span></div>"
+                    selVotes = "<div class='col' style='padding-left:1rem;'><span class='badge badge-pill badge-warning'>" + selection.votes + " Votes</span></div>"
+                }
+                else {
                     owner = "";
+                    selVotes = "";
+                }
+
+                if(hasVoted)
+                    hasVotedLabel = "<div class='row justify-content-center'><span class='badge badge-pill badge-danger'>You've Voted</span></div>"
+                else
+                    hasVotedLabel = "";
+
+                if (name == hasVotedName)
+                    hasVotedName = "<span class='material-icons' style='color: green; padding-left:1rem;'> check_circle </span>";
+                else
+                    hasVotedName = "";
 
 
                 if(hasVoted || pollData.owner == email) {
                     sel = "<div class='row justify-content-center'>"
-                        + "<div class='col align-self-center text-right'>"
-                        + "<h2 class='display-5'>" + name + "</h2>"
-                        + "</div>"
                         + "<div class='col align-self-center'>"
+                        + "<h2 class='display-5 text-center'>" + name + hasVotedName + selVotes + "</h2>"
                         + "</div></div>"
 
                 } else {
                     sel = "<div class='row justify-content-center'>"
-                        + "<div class='col align-self-center text-right'>"
+                        + "<div class='col align-self-center'>"
                         + "<h2 class='display-5'>" + name + "</h2>"
                         + "</div>"
                         + "<div class='col align-self-center'>"
@@ -57,10 +77,9 @@ export default class Poll {
 
 
         $(newCol).html("<div class='bg-white rounded-lg p-5 shadow'>"
-             + "<div class='row justify-content-center'>"
+             + hasVotedLabel
              + owner
-             + "<h3>" + pollData.pollName + "</h3>"
-             + "</div>"
+             + header
              + "<div class='row text-center mt-4'>" 
              + "<div class='col-6 border-right'>"
              + "<div class='h5 font-weight-bold mb-0 text-primary'>" + pollData.startDate + "</div>"

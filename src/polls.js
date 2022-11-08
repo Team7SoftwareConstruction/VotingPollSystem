@@ -6,6 +6,8 @@ import { cid, logged_user } from "./auth";
 import { accountsRef, db, displayModal, loadData, pollsRef } from "./database";
 import Poll, { pollCreator } from "./poll";
 
+var generatedPolls = 0;
+
 // Map of Active Polls
 const pollList = new Map();
 
@@ -32,10 +34,11 @@ generateActivePolls();
 
 // Master Function to add Table Data based on Ref, Table Name, and Column Headers
 function generateActivePolls() {
+    let writes = 1;
     const q = loadData(pollsRef,'active', '==', true);
     onSnapshot(q, (querySnapshot) => {
         querySnapshot.docChanges().forEach(change => {
-            console.log("This is a write");
+            console.log("One Write - Total is now " + writes);
             if (change.type === "added") {
                 pollList.set(change.doc.id,{...change.doc.data(), id: change.doc.id})
                 generatePollListing(change.doc.id, pollList.get(change.doc.id));
@@ -44,13 +47,14 @@ function generateActivePolls() {
             if (change.type === "modified") {
                 pollList.set(change.doc.id,{...change.doc.data(), id: change.doc.id})
                 generatePollListing(change.doc.id, pollList.get(change.doc.id));
-                console.log("Modified city: ", change.doc.data());
+                console.log("Modified Poll: ", change.doc.data());
             }
             if (change.type === "removed") {
                 generatePollListing(change.doc.id, pollList.get(change.doc.id));
                 pollList.delete(change.doc.id)
-                console.log("Removed city: ", change.doc.data());
+                console.log("Removed Poll: ", change.doc.data());
             }
+            writes++;
         });
             console.log("New and Improved");
             console.log(pollList);
@@ -71,18 +75,24 @@ function generateActivePolls() {
     }))
     
     let currPoll = new Poll(email, id, pollItem);
+    generatedPolls++;
     let selectBtns = currPoll.getElementsByTagName('button');
     pollItem.selections.forEach((selection, idx) => {
         if (pollItem.owner != email && !hasVoted) {
-            selectBtns[idx].addEventListener('click', (event) => {
-                confirmVote(id, selection);
-            })
+            selectBtns[idx].addEventListener("click", function () { confirmVote(id, selection); });
         }
 
     })
     
     if (document.getElementById(id) == null) 
         pollListing.append(currPoll);
+
+    if(generatedPolls == 2) {
+        generatedPolls = 0;
+        let divider = document.createElement("div");
+        divider.className = "w-100";
+        pollListing.append(divider);
+    }
   }
 
   function confirmVote(id, selection){
@@ -102,14 +112,17 @@ function generateActivePolls() {
             confirmVoteForm.reset();
             addVoteToPoll(selection.selectionName, id);
             addVoteToAccount(selection.selectionName, id);
-            console.log("SUbmitted");
-            confirmVoteModal.hide();
+            console.log("Submitted");
+            setTimeout(function(){
+                location.reload();
+            },400);
         });
     }
     displayModal(true, confirmVoteModal);
   }
 
   function addVoteToAccount(selectionName, pollID) {
+    console.log(selectionName);
     var cid;
     let q = loadData(accountsRef, 'email', "==", logged_user.email);
     getDocs(q)
@@ -167,13 +180,11 @@ function addVoteToPoll(selectionName, pollID) {
             "voterEmail": logged_user.email
         }
         selections.forEach(selection =>{
-            console.log(selection.selectionName);
-            console.log(selectionName);
             if(selection.selectionName == selectionName) {
-                console.log("Reached");
                 selection.votes = selection.votes + 1;
             }
         })
+        console.log(current_voter)
         voters.push(current_voter);
 
         updateDoc(doc(db, 'pollTesting', pid), {
