@@ -4,7 +4,8 @@ module.exports = {
     mode: 'development',
     entry: {
         index: ['./src/index.js', './src/database.js', './src/loginForms.js', './src/auth.js'],
-        polls: ['./src/polls.js', './src/database.js', './src/loginForms.js', './src/auth.js'],
+        polls: ['./src/polls.js', './src/database.js', './src/loginForms.js', './src/auth.js', './src/poll.js'],
+        userDash: ['./src/userDash.js', './src/database.js', './src/loginForms.js', './src/auth.js', './src/poll.js'],
         accountPage: ['./src/accountPage.js', './src/database.js', './src/loginForms.js', './src/auth.js']
     },
     output: {

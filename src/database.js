@@ -1,7 +1,7 @@
 console.log("Page is running Database Js v1.0");
 
 import {
-    getFirestore, collection, query, getDocs, where
+    getFirestore, collection, query, onSnapshot, where,
 } from 'firebase/firestore';
 
 
@@ -35,37 +35,41 @@ const firebaseConfig = {
   export { pollsRef, accountsRef, app, db}
 
   // Master Function to add Table Data based on Ref, Table Name, and Column Headers
-  export function addTableData(collectionRef, tableName, colNames) {
+  export function createCollectionArray(collectionRef, tableName, colNames) {
     const q = query(collectionRef);
-    getDocs(q)
-    .then((snapshot)=>{
-        let arrData = [];
-        let i = 0;
-        snapshot.docs.forEach((documents)=> {
-        arrData.push({...documents.data(), id: documents.id});
-        let table = document.getElementById(tableName);
-        let row = table.insertRow(-1);
+    const unsub = onSnapshot(q, (querySnapshot) => {
+        const collectionArray = [];
+        querySnapshot.docChanges().forEach(change => {
+            if (change.type === "added") {
+                console.log("New Poll: ", change.doc.data());
+            }
+            if (change.type === "modified") {
+                console.log("Modified city: ", change.doc.data());
+            }
+            if (change.type === "removed") {
+                console.log("Removed city: ", change.doc.data());
+            }
+            let i = 0;
+            collectionArray.push({...change.doc.data(), id: change.doc.id});
+            let table = document.getElementById(tableName);
+            let row = table.insertRow(-1);
 
-        colNames.forEach((item, index) => {
+            colNames.forEach((item, index) => {
                 let cell, text;
-                if (documents.data()[item] == undefined) {
+                if (change.doc.data()[item] == undefined) {
                     cell = row.insertCell(index);
                     text = document.createTextNode("UNDEFINED");
                     cell.appendChild(text);
                 } else {
                     cell = row.insertCell(index);
-                    text = document.createTextNode(documents.data()[item]);
+                    text = document.createTextNode(change.doc.data()[item]);
                     cell.appendChild(text);
                 }   
             });
-
-        i++;
+            i++;
+            console.log(collectionArray);
         });
-        console.log(arrData);
     })
-    .catch(err =>{
-        console.error(err);
-    });
   }
   
   // Master Function to displays the correct Modal based on value and Modal Ref

@@ -26,8 +26,11 @@ if (signOutForm != null) {
   signOutForm.addEventListener('submit',(event)=>{
     event.preventDefault();
     signOut(auth)
+    
     .then(() => {
         console.log('Sign out event');
+        location.reload();
+
     })
     .catch((error)=>{
         console.log(error);
@@ -115,6 +118,10 @@ if (registerForm != null) {
 
             // Get Token and Change View
             registerForm.reset();
+
+            setTimeout(function(){
+                location.reload();
+            },500);
         })
         .catch((error)=>{
             console.log(error);
@@ -139,6 +146,10 @@ if(loginForm != null) {
     
             // Get Token and Change View
             loginForm.reset();
+
+            setTimeout(function(){
+                location.reload();
+            },1000);
         })
         .catch((error)=>{
             console.log(error);

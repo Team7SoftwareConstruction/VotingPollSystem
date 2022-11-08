@@ -12,134 +12,142 @@ import { showModals } from "./loginForms";
 // Get the Account Info Container 
 const accountInfoContainer = document.getElementById('accountInfoContainer');
 
-/* Export and declare Auth, using the init = InitializeApp(firebaseConfig); */
-export const auth = getAuth(app);
-const user = auth.currentUser;
-if (user != null) {
-  // The user object has basic properties such as display name, email, etc.
-  const email = user.email;
-  const uid = user.uid;
-  console.log(uid)
-}
-
-/* Variables to define current user and role */
+// Variables to define current user and role 
 export var logged_user;
 var logged_role;
 
+// Export and declare Auth, using the init = InitializeApp(firebaseConfig); 
+export const auth = getAuth(app);
 
-/* Modified by Jesus Macias */
+export var cid;
+
+// Modified by Jesus Macias 
 // Get the current state of who is signed in or out.
 onAuthStateChanged(auth,(user)=>{
-  /* USER IS LOGGED IN */
+  // USER IS LOGGED IN 
   if (user) {
-    /* Logged_user becomes who is currently signed in */
+
+    // Logged_user becomes who is currently signed in 
     logged_user = user;
     
-    /* Get Token and in return data such as role else return error */
+    // Get Token and in return data such as role else return error 
     user.getIdTokenResult()
     .then((idTokenResult) => {
-      /* Logged_Role becomes the role of who is currently signed in */
+      // Logged_Role becomes the role of who is currently signed in 
       logged_role = idTokenResult.claims.role;
 
       showCurrentUser(true);
-      setCurrentUserInfo();
-
       /*
-      if (logged_role == "customer" || logged_role == 'undefined') {
-        redirectHome("customer");
+  
+      if (logged_role == "user" || logged_role == 'undefined') {
+        redirectHome("user");
       }
       */
-      
-      /* Display who is currently logged in message */
+
+      // Display who is currently logged in message 
       console.log(logged_user.email + " Logged In | Current Role: " + logged_role);
       
-      /* Change Views Based On Login */
+      // Change Views Based On Login 
   
     }).catch((error) => {
-      /* Error Message */
+      // Error Message 
       console.log(error);
     })
-  /* USER ISN'T LOGGED IN */
+  // USER ISN'T LOGGED IN 
   } else {
-    /* If Logged User isn't Null Display Logoff Message */
+    // If Logged User isn't Null Display Logoff Message 
     if (logged_user != null) {
       console.log(logged_user.email + " Logged Off");
     }
 
     showCurrentUser(false);
 
-    /* Since user isn't logged on, reset logged_role and logged_user */
+    // Since user isn't logged on, reset logged_role and logged_user 
     logged_role = null;
     logged_user = null;
 
-    /* Change Views Based On Login */
+    // Change Views Based On Login 
 
   }
 })
 
-// Function to Update Current Account Doc
-export function updateUserDoc(activeIn) {
-    var cid;
-    let q = loadData(accountsRef, 'email', "==", logged_user.email);
-    getDocs(q)
-    .then((snapshot) =>{
-        snapshot.docs.forEach((documents) => {
-            cid = documents.id;
-            console.log(cid);
-            getDoc(doc(db,'accountTesting',cid)).then(docSnap=> {
-                if(docSnap.exists()) {
-                    var totalPollsOut = Number(docSnap.data()['totalPolls']) - 1;
-                    var activePollsOut = Number(docSnap.data()['activePolls']);
-                    var inactivePollsOut = Number(docSnap.data()['inactivePolls']);
-                    if(activeIn)
-                        activePollsOut = Number(docSnap.data()['activePolls']) + 1;
-                    else 
-                        inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
-
-                    updateDoc(doc(db, 'accountTesting', cid), {
-                        totalPolls: totalPollsOut,
-                        activePolls: activePollsOut,
-                        inactivePolls: inactivePollsOut
-                    })
-                }
-            })
-        })
-    })  
-
+// Function to set the redirect link for Dashboard based on Current User
+function setDashLink(role) {
+  if (role == 'admin')
+    document.getElementById('dashboardLink').href = "./adminDash.html";
+  else
+    document.getElementById('dashboardLink').href = "./userDash.html";
 }
 
 // Function used to display the Current User on Home Page
 export function showCurrentUser(val) {
-    if (val == false) {
-        showModals(true);
-        accountInfoContainer.style.display = "none";
-    } else {
-        showModals(false);
-        accountInfoContainer.style.display = "";
-        let accountEmailLabel = document.getElementById('accountEmail');
-        accountEmailLabel.innerText = logged_user.email;
-    }
+  if (val == false) {
+    accountInfoContainer.style.display = "none";
+    showModals(true);
+  } else {
+    accountInfoContainer.style.display = "";
+    showModals(false);
+    setCurrentUserInfo();
+  }
 }
 
+/* This Function is used to get the Account Document using the Current User Email,
+   Upon getting the Document, the Nav Bar is setup for the Current Account in the sense,
+   Of Total Polls Left, Inactive Polls, and Active Polls.
+*/
 function setCurrentUserInfo() {
-    let q = loadData(accountsRef, "email", "==", logged_user.email);
-    getDocs(q).then((snapshot)=>{
-        snapshot.docs.forEach((documents)=>{
-            let activePollsBar = document.getElementById('accountActivePolls');
-            let inactivePollsBar = document.getElementById('accountInactivePolls');
-            let totalLeftBar = document.getElementById('accountTotalPollsLeft');
+  setDashLink('user');
+  let accountEmailLabel = document.getElementById('accountEmail');
+  accountEmailLabel.innerText = logged_user.email;
 
-            let activePollsLabel = document.getElementById('activePollsLabel');
-            let inactivePollLabel = document.getElementById('inactivePollsLabel');
-            let totalLeftLabel = document.getElementById('totalPollsLeftLabel');
+  let q = loadData(accountsRef, "email", "==", logged_user.email);
+  getDocs(q).then((snapshot)=>{
+    snapshot.docs.forEach((documents)=>{
+      let activePollsBar = document.getElementById('accountActivePolls');
+      let inactivePollsBar = document.getElementById('accountInactivePolls');
+      let totalLeftBar = document.getElementById('accountTotalPollsLeft');
 
-            activePollsBar.style = "width: " + documents.data()['activePolls'] + "%;";
-            inactivePollsBar.style = "width: " + documents.data()['inactivePolls'] + "%;";
-            totalLeftBar.style = "width: " + documents.data()['totalPolls'] + "%;";
+      let activePollsLabel = document.getElementById('activePollsLabel');
+      let inactivePollLabel = document.getElementById('inactivePollsLabel');
+      let totalLeftLabel = document.getElementById('totalPollsLeftLabel');
 
-            activePollsLabel.innerText = documents.data()['activePolls'] + " Active"
-            inactivePollLabel.innerText = documents.data()['inactivePolls'] + " Inactive"
-            totalLeftLabel.innerText = documents.data()['totalPolls'] + " Left"
-        })
+      activePollsBar.style = "width: " + documents.data()['activePolls'] + "%;";
+      inactivePollsBar.style = "width: " + documents.data()['inactivePolls'] + "%;";
+      totalLeftBar.style = "width: " + documents.data()['totalPolls'] + "%;";
+
+      activePollsLabel.innerText = documents.data()['activePolls'] + " Active"
+      inactivePollLabel.innerText = documents.data()['inactivePolls'] + " Inactive"
+      totalLeftLabel.innerText = documents.data()['totalPolls'] + " Left"
     })
-  }
+  })
+}
+
+  // Function to Update Current Account Doc used when Poll is Created.
+export function updateUserDoc(activeIn) {
+  var cid;
+  let q = loadData(accountsRef, 'email', "==", logged_user.email);
+  getDocs(q)
+  .then((snapshot) =>{
+    snapshot.docs.forEach((documents) => {
+      cid = documents.id;
+      console.log(cid);
+      getDoc(doc(db,'accountTesting',cid)).then(docSnap=> {
+        if(docSnap.exists()) {
+          var totalPollsOut = Number(docSnap.data()['totalPolls']) - 1;
+          var activePollsOut = Number(docSnap.data()['activePolls']);
+          var inactivePollsOut = Number(docSnap.data()['inactivePolls']);
+          if(activeIn)
+            activePollsOut = Number(docSnap.data()['activePolls']) + 1;
+          else 
+            inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
+
+          updateDoc(doc(db, 'accountTesting', cid), {
+            totalPolls: totalPollsOut,
+            activePolls: activePollsOut,
+            inactivePolls: inactivePollsOut
+          })
+        }
+      })
+    })
+  })  
+}

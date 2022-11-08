@@ -9,7 +9,7 @@
 
         <!-- Required meta tags -->
         <meta charset="utf-8">
-        <title>Poll Listings</title>
+        <title>My Polls</title>
 
         <!-- MATERIAL CDN -->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" crossorigin="anonymous">
         
         <!-- SCRIPT TAG-->
-        <script defer src="polls.bundle.js"></script>
+        <script defer src="userDash.bundle.js"></script>
 
     </head>
     <!-- END OF HEAD-->
@@ -195,43 +195,175 @@
         <!-- An Example: <div class="row"> </div> is one row and if columns were needed you must add seperate <div class="col"</div> within the Div as Row to add wanted Columns-->
         <div class="container">
 
+            <!-- START OF Row for Button To Create New Poll -->
+            <div class="row justify-content-center">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-info btn-lg" id="createPollBtn" style="margin: 2rem;padding: 2rem;">
+                    Create Poll
+                </button>
+            </div>
+        </div>
+
         <!-- START OF Row to contain Poll Listing -->
         <div class="row" id="pollListing">
+            <script>
+                function confirmVote(arr) {
+                    console.log("here");
+
+                }
+            </script>
+
             
         </div>
         <!-- END OF Row to contain Poll Listing -->
 
-        <form id="confirmVoteForm">
-            <!-- START OF Create New Poll Modal -->
-            <div class="modal fade" id="confirmVoteModal" tabindex="-1" role="dialog" aria-labelledby="confirmVoteModal" aria-hidden="true">
-                
-                <div class="modal-dialog" role="document">
+            <!-- END OF Row for Button To Create New Poll -->
+            
+            <form id="createPollForm">
+                <!-- START OF Create New Poll Modal -->
+                <div class="modal fade" id="createPollModal" tabindex="-1" role="dialog" aria-labelledby="createPollModal" aria-hidden="true">
+                    
+                    <div class="modal-dialog" role="document">
 
-                    <div class="modal-content">
+                        <div class="modal-content">
 
-                        <div class="row justify-content-center">
-                            <h2 class="display-4" id="confirmHeader">Confirm Vote</h2>
+                            <div class="row justify-content-center">
+                                <h2 class="display-4">Poll Creator</h2>
+                            </div>
+
+                            <div class="modal-body">
+                                
+                                <!-- START OF Row to contain Poll Prototype-->
+                                <div class="row justify-content-center">
+                                    <!-- START OF Voting Poll Example-->
+                                    <div class="bg-white rounded-lg p-5 shadow">
+                                        
+                                        <div class="row justify-content-center">
+                                            <label style="color:black;" for="pollName">Poll Name</label>
+                                            
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <input type="text" id="pollName" required><br>
+                                        </div>
+                                    
+                                        <!-- START OF Poll Start Time Frame -->
+                                        <div class="row text-center mt-4">
+                                            <div class="col-6">
+                                                <div class="h5 font-weight-bold mb-0 text-primary">
+                                                    <input type="date" id="startDate" name="startDate" required>
+                                                </div>
+                                                <span class="small text-gray">Start Date</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="h5 font-weight-bold mb-0 text-primary">
+                                                    <input type="time" id="startTime" name="startTime" required>
+                                                </div>
+                                                <span class="small text-gray">Start Time</span>
+                                            </div>
+                                        </div>
+                                        <!-- END OF Voting Poll Start Time Frame-->
+
+                                        <br>
+
+                                        <!-- START OF Poll Selections -->
+                                        <div class="bg-white rounded-lg p-5 shadow">
+                                            <!-- Add Buttons To Add Selections and Add Selection Names-->
+                                                <div class="">
+                                                    <div class="col-lg-12">
+                                                        <div id="row">
+                                                            <div class="input-group m-3">
+                                                                <input type="text"
+                                                                    id="sel0" name="sel0" required>
+                                                            </div>
+                                                        </div>
+                                                        <div id="row">
+                                                            <div class="input-group m-3">
+                                                                <input type="text"
+                                                                    id="sel1" name="sel1" required>
+                                                            </div>
+                                                        </div>
+                                    
+                                                        <div id="newinput"></div>
+                                                        <button id="rowAdder" type="button"
+                                                            class="btn btn-dark">
+                                                            <span class="bi bi-plus-square-dotted">
+                                                            </span> ADD
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                        <!-- END OF Poll Selections -->
+                            
+                                        <!-- START OF Poll End Time Frame -->
+                                        <div class="row text-center mt-4">
+                                            <div class="col-6">
+                                                <div class="h5 font-weight-bold mb-0 text-danger">
+                                                    <input type="date" id="endDate" name="endDate" required>
+                                                </div>
+                                                <span class="small text-gray">Closing Date</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="h5 font-weight-bold mb-0 text-danger">
+                                                    <input type="time" id="endTime" name="endTime" required>
+                                                </div>
+                                                <span class="small text-gray">Closing Time</span>
+                                            </div>
+                                        </div>
+                                        <!-- END OF Poll End Time Frame -->
+
+                                    </div>
+                                    <!-- END OF Poll Selection Example-->
+
+                                </div>
+                                <!-- END OF Row to contain Poll Prototype-->
+
+                                <fieldset class="form-group" style="margin: 2rem;">
+                                    <div class="row">
+                                      <legend class="col-form-label col-sm-2 pt-0">Viewing Status</legend>
+                                      <div class="col-sm-10">
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="viewStatus" id="viewStatus1" value="true" checked>
+                                          <label class="form-check-label" for="viewStatus1">
+                                            Public
+                                          </label>
+                                        </div>
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="viewStatus" id="viewStatus2" value="false">
+                                          <label class="form-check-label" for="viewStatus2">
+                                            Private
+                                          </label>
+                                        </div>
+                                    </div>
+                                  </fieldset>
+
+                                  <fieldset class="form-group" style="margin: 2rem;">
+                                    <div class="row">
+                                      <legend class="col-form-label col-sm-2 pt-0">Show Percent</legend>
+                                      <div class="col-sm-10">
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="viewPercent" id="viewPercent1" value="true" checked>
+                                          <label class="form-check-label" for="viewPercent1">
+                                            On
+                                          </label>
+                                        </div>
+                                        <div class="form-check">
+                                          <input class="form-check-input" type="radio" name="viewPercent" id="viewPercent2" value="false">
+                                          <label class="form-check-label" for="viewPercent2">
+                                            Off
+                                          </label>
+                                        </div>
+                                    </div>
+                                  </fieldset>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" id="publishPollBtn">Publish Poll</button>
+                            </div>   
                         </div>
-
-                        <div class="modal-body justify-content-center">
-                            <div class="hero-unit text-center">
-                                <h1 id="choosenSelection">Heading</h1>
-                                <p id="confirmText">You are confirming that the selection above is your final selection.</p>
-                                <p id="confirmText2">
-                                    In the final, here is where we ask for code
-                                </p>
-                              </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="publishVoteBtn">Confirm Vote</button>
-                        </div>   
                     </div>
                 </div>
-            </div>
-        </form>
-
+            </form>
     </body>
     <!-- END OF HOME PAGE-->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
