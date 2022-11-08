@@ -90,8 +90,9 @@ function generateActivePolls() {
     if(generatedPolls == 2) {
         generatedPolls = 0;
         let divider = document.createElement("div");
+        let spacer = document.createElement("br");
         divider.className = "w-100";
-        pollListing.append(divider);
+        pollListing.append(divider, spacer);
     }
   }
 
