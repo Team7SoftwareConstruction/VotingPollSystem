@@ -124,30 +124,32 @@ function setCurrentUserInfo() {
 
   // Function to Update Current Account Doc used when Poll is Created.
 export function updateUserDoc(activeIn) {
-  var cid;
-  let q = loadData(accountsRef, 'email', "==", logged_user.email);
-  getDocs(q)
-  .then((snapshot) =>{
-    snapshot.docs.forEach((documents) => {
-      cid = documents.id;
-      console.log(cid);
-      getDoc(doc(db,'accountTesting',cid)).then(docSnap=> {
-        if(docSnap.exists()) {
-          var totalPollsOut = Number(docSnap.data()['totalPolls']) - 1;
-          var activePollsOut = Number(docSnap.data()['activePolls']);
-          var inactivePollsOut = Number(docSnap.data()['inactivePolls']);
-          if(activeIn)
-            activePollsOut = Number(docSnap.data()['activePolls']) + 1;
-          else 
-            inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
+  return new Promise((resolve) => {
+    var cid;
+    let q = loadData(accountsRef, 'email', "==", logged_user.email);
+    getDocs(q)
+    .then((snapshot) =>{
+      snapshot.docs.forEach((documents) => {
+        cid = documents.id;
+        console.log(cid);
+        getDoc(doc(db,'accountTesting',cid)).then(docSnap=> {
+          if(docSnap.exists()) {
+            var totalPollsOut = Number(docSnap.data()['totalPolls']) - 1;
+            var activePollsOut = Number(docSnap.data()['activePolls']);
+            var inactivePollsOut = Number(docSnap.data()['inactivePolls']);
+            if(activeIn)
+              activePollsOut = Number(docSnap.data()['activePolls']) + 1;
+            else 
+              inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
 
-          updateDoc(doc(db, 'accountTesting', cid), {
-            totalPolls: totalPollsOut,
-            activePolls: activePollsOut,
-            inactivePolls: inactivePollsOut
-          })
-        }
+            updateDoc(doc(db, 'accountTesting', cid), {
+              totalPolls: totalPollsOut,
+              activePolls: activePollsOut,
+              inactivePolls: inactivePollsOut
+            })
+          }
+        })
       })
-    })
-  })  
+    })  
+  });
 }

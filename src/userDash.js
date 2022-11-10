@@ -116,39 +116,43 @@ function compareTimeFrame(startDateIn, startTimeIn) {
 
 
 function createPollDoc(data) {
-    let activeIn = false;
+    return new Promise((resolve) => {
+        let activeIn = false;
 
-    let selectionsList = [];
-    for (const [key, value] of Object.entries(data)) {
-        if(key.substring(0,3) == "sel") {
-            var currentSelection = {
-                'selectionName':value,
-                'votes': 0
-            }
-            console.log(currentSelection);
-            selectionsList.push(currentSelection);
-        }  
-    }
+        let selectionsList = [];
+        for (const [key, value] of Object.entries(data)) {
+            if(key.substring(0,3) == "sel") {
+                var currentSelection = {
+                    'selectionName':value,
+                    'votes': 0
+                }
+                console.log(currentSelection);
+                selectionsList.push(currentSelection);
+            }  
+        }
 
-    activeIn = compareTimeFrame(createPollForm.startDate, createPollForm.startTime);
-    
+        activeIn = compareTimeFrame(createPollForm.startDate, createPollForm.startTime);
+        let isPublic = createPollForm.viewStatus.value == "true";
+        let showPercent = createPollForm.viewPercent.value == "true";
 
-    addDoc(pollsRef, {
-        pollName: createPollForm.pollName.value,
-        endDate: createPollForm.endDate.value,
-        endTime: createPollForm.endTime.value,
-        startTime: createPollForm.startTime.value,
-        startDate: createPollForm.startDate.value,
-        owner: logged_user.email,
-        public: Boolean(createPollForm.viewStatus.value),
-        viewPercent: Boolean(createPollForm.viewPercent.value),
-        totalVotes: 0,
-        selections: selectionsList,
-        voters: [],
-        active: activeIn
-    })
+        addDoc(pollsRef, {
+            pollName: createPollForm.pollName.value,
+            endDate: createPollForm.endDate.value,
+            endTime: createPollForm.endTime.value,
+            startTime: createPollForm.startTime.value,
+            startDate: createPollForm.startDate.value,
+            owner: logged_user.email,
+            public: isPublic,
+            viewPercent: showPercent,
+            totalVotes: 0,
+            selections: selectionsList,
+            voters: [],
+            active: activeIn
+        })
 
-    updateUserDoc(activeIn);
+        updateUserDoc(activeIn);
+        resolve();
+    });
 }
 
 // Checks to see if the Create Poll Form exist, if so check for submission
@@ -156,14 +160,18 @@ if (createPollForm != null) {
     createPollForm.addEventListener('submit',(event) => {
         event.preventDefault();
         const data = Object.fromEntries(new FormData(createPollForm).entries());
-        createPollDoc(data);
-        console.log(data);
-        createPollForm.reset();
+        executeCreatePoll(data);
+        displayModal(false, createPollModal);
 
         setTimeout(function(){
             location.reload();
         },500);
     });
+}
+
+async function executeCreatePoll(data) {
+    await createPollDoc(data);
+    
 }
 
 // Checks that the Create Poll Modal exists

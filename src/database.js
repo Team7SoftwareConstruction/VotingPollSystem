@@ -62,7 +62,10 @@ const firebaseConfig = {
                     cell.appendChild(text);
                 } else {
                     cell = row.insertCell(index);
-                    text = document.createTextNode(change.doc.data()[item]);
+                    if (item == 'votedOn')
+                        text = document.createTextNode(JSON.stringify(change.doc.data()['votedOn']));
+                    else 
+                        text = document.createTextNode(change.doc.data()[item]);
                     cell.appendChild(text);
                 }   
             });
