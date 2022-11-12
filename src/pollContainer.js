@@ -7,7 +7,6 @@ export default class PollContainer {
     // This is the Constructor to initialize Poll Data Values and Construct Poll Element
     constructor(webPage, email) {
         this.email = email;
-        this.multipleZero = 0;
         console.log(email)
 
         // Keep track of Generated Polls
@@ -78,6 +77,7 @@ export default class PollContainer {
             });
 
             this.pollList = pollList;
+            this.finished = true;
             // Log the Polls Map
             console.log(pollList);
         });
@@ -128,12 +128,6 @@ export default class PollContainer {
              this.generatedPolls++;
         }
 
-        if (this.generatedPolls == 0 && this.multipleZero == 0) {
-            this.multipleZero = 1
-        } else if (this.generatedPolls == 0 && this.multipleZero > 0) {
-            this.multipleZero++;
-        }
-
         // If Generated Poll is 2 then Row limit has been met, create a divider to create new row and a spacer,
         if(this.generatedPolls % 2 == 0 && this.generatedPolls != 0) {
             this.generatedPolls = 0;
@@ -142,13 +136,10 @@ export default class PollContainer {
             spacer.className = "w-100";
             divider.className = "w-100";
             pollListing.append(divider, spacer);
-        } else if (this.multipleZero > 1) {
-            if(this.votedOnBtn == true) {
+        } else if (this.generatedPolls == 0 && this.votedOnBtn)  {
                 noVotedOnPollsMessage();
-            } else {
-                noPollsToVoteMessage();
-            }
-            
+        } else if (this.generatedPolls == 0 &&  this.finished){
+            console.log("No More Active Polls")
         }
     }
 

@@ -31,7 +31,6 @@ if (viewActivePolls) {
         console.log("View Active");
         pollContainer.showOwned = false;
         pollContainer.showVoted = false;
-        pollContainer.multipleZero = 0;
         pollContainer.votedOnBtn = false;
         pollContainer.generatedPolls = 0;
         document.getElementById('pollListing').remove();
@@ -49,7 +48,6 @@ if (viewVotedOnPolls) {
     viewVotedOnPolls.addEventListener('click', (event) =>  {
         pollContainer.showOwned = false;
         pollContainer.showVoted = true;
-        pollContainer.multipleZero = 0;
         pollContainer.votedOnBtn = true;
         pollContainer.generatedPolls = 0;
         document.getElementById('pollListing').remove();
