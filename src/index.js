@@ -1,8 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./auth";
-import { displayModal } from "./database";
+import { displayModal, signInToVoteMessage } from "./database";
 import PollContainer from "./pollContainer";
-import { signInToVoteMessage } from "./vote";
 
 var pollContainer;
 
@@ -17,7 +16,6 @@ onAuthStateChanged(auth,(user)=>{
     /* USER ISN'T LOGGED IN */
     } else {
         signInToVoteMessage();
-        displayModal(true, confirmVoteModal)
       /* If Logged User isn't Null Display Logoff Message */
 
     }

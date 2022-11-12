@@ -209,6 +209,65 @@
                     
             </div>
 
+            <!-- END OF Row to contain Poll Listing -->
+
+            <!-- START OF Create New Poll Modal -->
+            <div class="modal fade" id="confirmVoteModal" tabindex="-1" role="dialog" aria-labelledby="confirmVoteModal" aria-hidden="true">
+                
+                <div class="modal-dialog" role="document">
+
+                    <div class="modal-content">
+
+                        <div class="row justify-content-center">
+                            <h2 class="display-4" id="confirmHeader">Confirm Vote</h2>
+                        </div>
+
+                        <div class="modal-body justify-content-center">
+                            <div class="hero-unit text-center">
+                                <h1 id="choosenSelection">Heading</h1>
+                                <p id="confirmText">You are confirming that the selection above is your final selection.</p>
+                                <p id="confirmText2">
+                                    In the final, here is where we ask for code
+                                </p>
+                                </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" id="publishVoteBtn">Confirm Vote</button>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+
+            <!-- START OF Eror Message Modal -->
+            <div class="modal fade" id="errorMessageModal" tabindex="-1" role="dialog" aria-labelledby="errorMessageModal" aria-hidden="true">
+                
+                <div class="modal-dialog" role="document">
+
+                    <div class="modal-content">
+
+                        <div class="row justify-content-center">
+                            <h2 class="display-4" id="errorHeader">Error Header</h2>
+                        </div>
+
+                        <div class="modal-body justify-content-center">
+                            <div class="hero-unit text-center">
+                                <h1 id="errorTitle">Error Title</h1>
+                                <p id="errorText">Error Description</p>
+                                <p id="errorText2">
+                                    Error Text2
+                                </p>
+                                </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+
             
         </div>
         <!-- END OF Container To Hold Elements -->

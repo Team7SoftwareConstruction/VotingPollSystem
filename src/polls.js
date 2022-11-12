@@ -1,12 +1,10 @@
 // Modified, Documented by Jesus Macias 
 
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./auth";
-import { displayModal } from "./database";
+import { auth, redirectHome } from "./auth";
+import { signInToVoteMessage } from "./database";
 import PollContainer from "./pollContainer";
-import { confirmVoteModal, signInToVoteMessage } from "./vote";
 
-const viewAllPolls = document.getElementById('viewAllPollsBtn')
 const viewVotedOnPolls = document.getElementById('viewVotedOnPollsBtn')
 const viewActivePolls = document.getElementById('viewActivePollsBtn')
 
@@ -22,8 +20,7 @@ onAuthStateChanged(auth,(user)=>{
 
     /* USER ISN'T LOGGED IN */
     } else {
-        signInToVoteMessage();
-        displayModal(true, confirmVoteModal)
+      redirectHome();
       /* If Logged User isn't Null Display Logoff Message */
 
     }
@@ -34,6 +31,8 @@ if (viewActivePolls) {
         console.log("View Active");
         pollContainer.showOwned = false;
         pollContainer.showVoted = false;
+        pollContainer.multipleZero = 0;
+        pollContainer.votedOnBtn = false;
         pollContainer.generatedPolls = 0;
         document.getElementById('pollListing').remove();
         const newPollListing = document.createElement("div")
@@ -50,6 +49,8 @@ if (viewVotedOnPolls) {
     viewVotedOnPolls.addEventListener('click', (event) =>  {
         pollContainer.showOwned = false;
         pollContainer.showVoted = true;
+        pollContainer.multipleZero = 0;
+        pollContainer.votedOnBtn = true;
         pollContainer.generatedPolls = 0;
         document.getElementById('pollListing').remove();
         const newPollListing = document.createElement("div")

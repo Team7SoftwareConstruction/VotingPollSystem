@@ -16,14 +16,6 @@ if (confirmVoteModal != null) {
     })
 }
 
-export function signInToVoteMessage() {
-    document.getElementById('confirmHeader').innerHTML = "<b style ='color:red;'>Warning</b>"
-    document.getElementById('confirmText').innerText = "Using the buttons on the top of the page, you may register or sign in.";
-    document.getElementById('choosenSelection').innerText = "Sign In To View Polls";
-    document.getElementById('confirmText2').innerText = "";
-    document.getElementById('publishVoteBtn').style = "display:none";
-}
-
 
 // This functions is used to confirm Vote of a Poll based on Poll ID and Selection chosen.
 export function confirmVote(id, selection, idx){

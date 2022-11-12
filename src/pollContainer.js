@@ -1,6 +1,5 @@
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { getCurrentUserEmail, logged_user } from "./auth";
-import { db, loadData, pollsRef } from "./database";
+import { onSnapshot, query, where } from "firebase/firestore";
+import { noPollsToVoteMessage, noVotedOnPollsMessage, pollsRef } from "./database";
 import Poll from "./poll";
 import { confirmVote } from "./vote";
 
@@ -8,6 +7,7 @@ export default class PollContainer {
     // This is the Constructor to initialize Poll Data Values and Construct Poll Element
     constructor(webPage, email) {
         this.email = email;
+        this.multipleZero = 0;
         console.log(email)
 
         // Keep track of Generated Polls
@@ -29,7 +29,7 @@ export default class PollContainer {
                 return;
             case "indexPage":
                 this.q = query(pollsRef, where("totalVotes", ">=", 5));
-                this.showOwned = false;
+                this.showOwned = true;
                 this.showVoted = true;
                 console.log("Code hasn't been created yet")
                 return;
@@ -98,7 +98,6 @@ export default class PollContainer {
 
         // Go through all Selections of the Current Poll
         pollItem.selections.forEach((selection, idx) => {
-            console.log(idx)
             // If Current User isn't a Owner or Hasn't Voted add ability to Vote to Buttons.
             if (pollItem.owner != this.email && !hasVoted) {
                 selectBtns[idx].addEventListener("click", function () { confirmVote(id, selection, idx); });
@@ -106,32 +105,50 @@ export default class PollContainer {
 
         })
 
-        // Increase the number of generated Polls.
-        this.generatedPolls++;
-
         // If the Current Poll Element doesn't exist in the Polls HTML CODE add it to the Poll Listing Element
         if (this.showOwned && pollItem.owner == this.email) {
             pollListing.append(currPoll);
+             // Increase the number of generated Polls.
+            this.generatedPolls++;
         }else if (this.showVoted && hasVoted) {
-            pollListing.append(currPoll);   
+            pollListing.append(currPoll);
+             // Increase the number of generated Polls.
+             this.generatedPolls++;   
         }else if (!this.showOwned && !this.showVoted && pollItem.owner != this.email && !hasVoted) {
             pollListing.append(currPoll);
+             // Increase the number of generated Polls.
+             this.generatedPolls++;
         }else if (!this.showOwned && this.showVoted && pollItem.owner != this.email && hasVoted) {
             pollListing.append(currPoll);
-        } else {
-            // Increase the number of generated Polls.
-            this.generatedPolls--;
+             // Increase the number of generated Polls.
+             this.generatedPolls++;
+        }else if (this.showOwned && this.showVoted) {
+            pollListing.append(currPoll);
+             // Increase the number of generated Polls.
+             this.generatedPolls++;
         }
 
-        console.log(this.generatedPolls);
+        if (this.generatedPolls == 0 && this.multipleZero == 0) {
+            this.multipleZero = 1
+        } else if (this.generatedPolls == 0 && this.multipleZero > 0) {
+            this.multipleZero++;
+        }
+
         // If Generated Poll is 2 then Row limit has been met, create a divider to create new row and a spacer,
-        if(this.generatedPolls == 2) {
+        if(this.generatedPolls % 2 == 0 && this.generatedPolls != 0) {
             this.generatedPolls = 0;
             let divider = document.createElement("div");
             let spacer = document.createElement("br");
             spacer.className = "w-100";
             divider.className = "w-100";
             pollListing.append(divider, spacer);
+        } else if (this.multipleZero > 1) {
+            if(this.votedOnBtn == true) {
+                noVotedOnPollsMessage();
+            } else {
+                noPollsToVoteMessage();
+            }
+            
         }
     }
 

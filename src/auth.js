@@ -71,6 +71,29 @@ onAuthStateChanged(auth,(user)=>{
   }
 })
 
+/* Written by Jesus Macias */
+export function redirectHome(type) {
+  // This means viewing from website
+  let localhost = 0;
+  // Get the location path name 
+  let loc = window.location.pathname
+
+  // If on LocalHost then
+  if(loc.substring(0, 5) == "/dist") {
+    // Remove extra path
+    loc = window.location.pathname.substring(5)
+    // local host is being viewed
+    localhost = 1;
+  }
+
+  // If local host then redirect using correct path else use host path
+  if(localhost) {
+    window.location.href = window.location.origin + '/dist/index.html'
+  } else {
+    window.location.href = window.location.origin + '/index.html'
+  }
+}
+
 // Function to set the redirect link for Dashboard based on Current User
 function setDashLink(role) {
   if (role == 'admin')

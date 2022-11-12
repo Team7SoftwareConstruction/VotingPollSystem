@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { addDoc } from "firebase/firestore";
-import { auth, logged_user, updateUserDoc } from "./auth";
+import { auth, logged_user, redirectHome, updateUserDoc } from "./auth";
 import { displayModal, loadData, pollsRef } from "./database";
 import PollContainer from "./pollContainer";
 
@@ -36,7 +36,7 @@ onAuthStateChanged(auth,(user)=>{
 
     /* USER ISN'T LOGGED IN */
     } else {
-        //redirectHome();
+        redirectHome();
       /* If Logged User isn't Null Display Logoff Message */
 
     }
