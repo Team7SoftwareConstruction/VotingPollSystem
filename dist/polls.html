@@ -195,10 +195,31 @@
         <!-- An Example: <div class="row"> </div> is one row and if columns were needed you must add seperate <div class="col"</div> within the Div as Row to add wanted Columns-->
         <div class="container">
 
+        <!-- START OF Row for Button To Create New Poll -->
+        <div class="row justify-content-center text-center">
+            <div class="col align-self-center">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary btn-lg" id="viewActivePollsBtn" style="margin: 2rem;padding: 2rem;">
+                    View Active Polls
+                </button>
+                
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger btn-lg" id="viewVotedOnPollsBtn" style="margin: 2rem;padding: 2rem;">
+                    View Voted On Polls
+                </button>
+
+            </div>
+        </div>
+
+        <div id="appendTo">
+        
+        </div>
+
         <!-- START OF Row to contain Poll Listing -->
         <div class="row" id="pollListing">
-            
+                
         </div>
+
         <!-- END OF Row to contain Poll Listing -->
 
         <!-- START OF Create New Poll Modal -->

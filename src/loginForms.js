@@ -85,13 +85,8 @@ export function showModals(val) {
 }
 
 
-// Gets Register Form and if it exist allows the code to execute
-const registerForm = document.getElementById('signUpLive');
-if (registerForm != null) {
-    //let alert = document.getElementById("validSignUpAlert")
-    registerForm.addEventListener('submit',(event)=>{
-        event.preventDefault();
-
+function createUserDoc() {
+    return new Promise((addedUserDoc) => {
         // Gets Email and Password and create Account Firebase Auth
         const email = registerForm.email.value.toLowerCase();
         const pass = registerForm.signUpPassword.value;
@@ -115,19 +110,29 @@ if (registerForm != null) {
             })
             console.log(email + " was sucessfully created!")
             displayModal(false, registerModal);
-
-            // Get Token and Change View
-            registerForm.reset();
-
-            setTimeout(function(){
-                location.reload();
-            },500);
+            addedUserDoc();
         })
         .catch((error)=>{
             console.log(error);
             console.error();
         })
     });
+}
+
+
+// Gets Register Form and if it exist allows the code to execute
+const registerForm = document.getElementById('signUpLive');
+if (registerForm != null) {
+    //let alert = document.getElementById("validSignUpAlert")
+    registerForm.addEventListener('submit',async (event)=>{
+        event.preventDefault();
+        await createUserDoc()
+        .then((e) => {
+            setTimeout(function(){
+                location.reload();
+            },500);
+        })
+    });    
 }
 
 

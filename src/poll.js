@@ -70,7 +70,7 @@ export default class Poll {
             // If current Voter contains the Current User Email then Current User has Voted.
             if(Object.values(voter).includes(this.currUserEmail)) {
                 this.hasVoted = true;
-                this.hasVotedSelection = voter['selectionName'];
+                this.hasVotedSelection = voter['selectionIdx'];
             }
         });
     }
@@ -146,8 +146,8 @@ export default class Poll {
         let selectionsElement = "<div class='bg-white rounded-lg p-5 shadow'>" + this.getHeadingElement("Selections Below") + "<br>";
 
         //Go through each selection and make the Individual Selection Element for the Poll.
-        this.pollData.selections.forEach(selection => {
-            let selectionElement = this.createSelectionElement(selection) + this.showPercentsElement(selection);
+        this.pollData.selections.forEach((selection, idx) => {
+            let selectionElement = this.createSelectionElement(selection, idx) + this.showPercentsElement(selection);
             
             // Add the newly created Selection Element to the Entire Selections Element
             selectionsElement = selectionsElement + "<div class='bg-white rounded-lg p-5 border border-dark rounded shadow-lg'>" + selectionElement + "</div>";
@@ -158,9 +158,9 @@ export default class Poll {
     }
 
     // This function is used to create the INDIVIDUAL Selection Element
-    createSelectionElement (selection) {
+    createSelectionElement (selection, idx) {
         // Gets Checkmark if Voted else Blank
-        let selCheckmark = this.getSelCheckmark(selection);
+        let selCheckmark = this.getSelCheckmark(idx);
 
         // Gets Votes for Selection if Owner else Blank
         let selVotes = this.getSelVotesElement(selection);
@@ -191,9 +191,9 @@ export default class Poll {
     }
 
     // This function is used to get the Selection Checkmark
-    getSelCheckmark(sel) {
+    getSelCheckmark(idx) {
         // If the Has Voted Selection is equal to the Selection Name return Checkmark else return nothing.
-        if (sel.selectionName == this.hasVotedSelection)
+        if (idx == this.hasVotedSelection)
             return "<span class='material-icons' style='color: green; padding-left:1rem;'> check_circle </span>";
         else
             return "";
@@ -201,6 +201,11 @@ export default class Poll {
 
     // This function is used to show the Percents of this Poll.
     showPercentsElement(selection) {
+        /* Recreate this Percentage Display, so that instead of showing individual percents
+            You can just show the Percent Bar, and seperate the entire Bar based on the
+            percent of the Selections, kind of like how the Elections have theirs.
+        */
+    
         // If the Total Votes is more than 0 and this poll was set to Show Percent
         if(this.pollData.totalVotes > 0 && this.pollData.viewPercent) {
             var votePct = ((Number(selection.votes) * 100) / Number(this.pollData.totalVotes)).toFixed(2);

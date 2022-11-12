@@ -1,6 +1,8 @@
+import { onAuthStateChanged } from "firebase/auth";
 import { addDoc } from "firebase/firestore";
-import { logged_user, updateUserDoc } from "./auth";
+import { auth, logged_user, updateUserDoc } from "./auth";
 import { displayModal, loadData, pollsRef } from "./database";
+import PollContainer from "./pollContainer";
 
 // Get the Poll Creation modal
 export var createPollModal = document.getElementById("createPollModal");
@@ -22,6 +24,24 @@ const startDate = document.getElementById('startDate');
 const endDate = document.getElementById('endDate');
 const startTime = document.getElementById('startTime');
 const endTime = document.getElementById('endTime');
+
+
+onAuthStateChanged(auth,(user)=>{
+    /* USER IS LOGGED IN */
+    if (user) {
+      /* Logged_user becomes who is currently signed in */
+      // Import Statements for Polls Js
+      const pollContainer = new PollContainer("myPollsPage", user.email);
+      pollContainer.generatePolls();
+
+    /* USER ISN'T LOGGED IN */
+    } else {
+        //redirectHome();
+      /* If Logged User isn't Null Display Logoff Message */
+
+    }
+  })
+  
 
 // Set the Default Mins to Current Day
 defaultMin();
@@ -160,12 +180,13 @@ if (createPollForm != null) {
     createPollForm.addEventListener('submit',(event) => {
         event.preventDefault();
         const data = Object.fromEntries(new FormData(createPollForm).entries());
-        executeCreatePoll(data);
-        displayModal(false, createPollModal);
-
-        setTimeout(function(){
-            location.reload();
-        },500);
+        executeCreatePoll(data)
+        .then((e) => {
+            displayModal(false, createPollModal);
+            setTimeout(function(){
+                location.reload();
+            },500);
+        })
     });
 }
 

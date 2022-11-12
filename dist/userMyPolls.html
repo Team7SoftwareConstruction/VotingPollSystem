@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" crossorigin="anonymous">
         
         <!-- SCRIPT TAG-->
-        <script defer src="userDash.bundle.js"></script>
+        <script defer src="polls.bundle.js"></script>
 
     </head>
     <!-- END OF HEAD-->
@@ -117,15 +117,15 @@
                 <li id="accountPageNavItem" class="nav-item" style="margin-top: 10px">
 
                     <!-- START OF Account Page Link Element for Redirection -->
-                    <a id="dashboardLink" href="" class="nav-link" style="color:white;">
+                    <a id="accountPageLink" href="./accountPage.html" class="nav-link" style="color:white;">
 
                         <!-- START OF Row for Account Page Nav Item Display-->
                         <div class ="row justify-content-center">
                             <div class="col align-self-center">
-                                <h3>Dashboard</h3>
+                                <h3>Account</h3>
                             </div>
                             <div class="col align-self-center">
-                                <span class="material-icons">dashboard</span>
+                                <span class="material-icons">account_box</span>
                             </div>
                         </div>
                         <!-- END OF Row for Account Page Nav Item Display-->
@@ -168,14 +168,14 @@
             <div class="row bg-dark justify-content-center">
                 <div class="col ">
                     <div class="progress">
-                        <div class="progress-bar-striped progress-bar-animated bg-warning text-center" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="accountActivePolls"> 
-                            <p style="font-size: 8px;" id="activePollsLabel"></p>
+                        <div class="progress-bar-striped progress-bar-animated bg-warning text-center" role="progressbar" style="width: 10%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="accountActivePolls"> 
+                            <p style="font-size: 8px;" id="activePollsLabel">10 Active</p>
                         </div>
-                        <div class="progress-bar-striped progress-bar-animated bg-danger text-center" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="accountInactivePolls">
-                            <p style="font-size: 8px; color:white;" id="inactivePollsLabel"></p>
+                        <div class="progress-bar-striped progress-bar-animated bg-danger text-center" role="progressbar" style="width: 5%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="accountInactivePolls">
+                            <p style="font-size: 8px; color:white;" id="inactivePollsLabel">5 Inactive</p>
                         </div>
-                        <div class="progress-bar-striped progress-bar-animated bg-dark text-center" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" id="accountTotalPollsLeft">
-                            <p style="font-size: 8px; color:white" id="totalPollsLeftLabel"></p>
+                        <div class="progress-bar-striped progress-bar-animated bg-dark text-center" role="progressbar" style="width: 85%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" id="accountTotalPollsLeft">
+                            <p style="font-size: 8px; color:white" id="totalPollsLeftLabel">85 Left</p>
                         </div>
                     </div>
                 </div>
@@ -203,16 +203,6 @@
                 </button>
             </div>
         </div>
-
-        <div class ="row justify-content-center">
-            <h2 class="display-2 p-3"> My Polls <hr></h2>
-        </div>
-        <!-- START OF Row to contain Poll Listing -->
-        <div class="row" id="pollListing">
-            
-        </div>
-        <!-- END OF Row to contain Poll Listing -->
-
             <!-- END OF Row for Button To Create New Poll -->
             
             <form id="createPollForm">
