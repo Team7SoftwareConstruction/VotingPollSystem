@@ -73,6 +73,7 @@ function resetPollListing() {
   newPollListing.id = 'pollListing';
   const appendTo = document.getElementById('appendTo');
   appendTo.append(newPollListing);
-  pollContainer.generatePolls();
+  pollContainer.displayGeneratedList();
+  pollContainer.displayNoPollMessages();
 }
   

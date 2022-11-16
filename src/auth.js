@@ -5,7 +5,7 @@ import {
   // Import References to Firebase Auth Exports
   signOut, getAuth, onAuthStateChanged,
 } from "firebase/auth";
-import { doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
 import { accountsRef, app, db, loadData } from "./database";
 import { showModals } from "./loginForms";
 
@@ -124,8 +124,8 @@ function setCurrentUserInfo() {
   accountEmailLabel.innerText = logged_user.email;
 
   let q = loadData(accountsRef, "email", "==", logged_user.email);
-  getDocs(q).then((snapshot)=>{
-    snapshot.docs.forEach((documents)=>{
+  onSnapshot(q, (querySnapshot) => {
+    querySnapshot.docChanges().forEach(change => {
       let activePollsBar = document.getElementById('accountActivePolls');
       let inactivePollsBar = document.getElementById('accountInactivePolls');
       let totalLeftBar = document.getElementById('accountTotalPollsLeft');
@@ -134,21 +134,24 @@ function setCurrentUserInfo() {
       let inactivePollLabel = document.getElementById('inactivePollsLabel');
       let totalLeftLabel = document.getElementById('totalPollsLeftLabel');
 
-      activePollsBar.style = "width: " + documents.data()['activePolls'] + "%;";
-      inactivePollsBar.style = "width: " + documents.data()['inactivePolls'] + "%;";
-      totalLeftBar.style = "width: " + documents.data()['totalPolls'] + "%;";
+      activePollsBar.style = "width: " + change.doc.data()['activePolls'] + "%;";
+      inactivePollsBar.style = "width: " + change.doc.data()['inactivePolls'] + "%;";
+      totalLeftBar.style = "width: " + change.doc.data()['totalPolls'] + "%;";
 
-      activePollsLabel.innerText = documents.data()['activePolls'] + " Active"
-      inactivePollLabel.innerText = documents.data()['inactivePolls'] + " Inactive"
-      totalLeftLabel.innerText = documents.data()['totalPolls'] + " Left"
+      activePollsLabel.innerText = change.doc.data()['activePolls'] + " Active"
+      inactivePollLabel.innerText = change.doc.data()['inactivePolls'] + " Inactive"
+      totalLeftLabel.innerText = change.doc.data()['totalPolls'] + " Left"
     })
   })
 }
 
   // Function to Update Current Account Doc used when Poll is Created.
-export function updateUserDoc(activeIn) {
+export function updateUserDoc(activeIn, changeLabel) {
   return new Promise((resolve) => {
-    var cid;
+    let totalPollsOut;
+    let activePollsOut;
+    let inactivePollsOut;
+    let cid;
     let q = loadData(accountsRef, 'email', "==", logged_user.email);
     getDocs(q)
     .then((snapshot) =>{
@@ -157,14 +160,28 @@ export function updateUserDoc(activeIn) {
         console.log(cid);
         getDoc(doc(db,'accountTesting',cid)).then(docSnap=> {
           if(docSnap.exists()) {
-            var totalPollsOut = Number(docSnap.data()['totalPolls']) - 1;
-            var activePollsOut = Number(docSnap.data()['activePolls']);
-            var inactivePollsOut = Number(docSnap.data()['inactivePolls']);
-            if(activeIn)
-              activePollsOut = Number(docSnap.data()['activePolls']) + 1;
-            else 
-              inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
-
+            if (changeLabel == 'added') {
+              totalPollsOut = Number(docSnap.data()['totalPolls']) - 1;
+              if(activeIn) {
+                activePollsOut = Number(docSnap.data()['activePolls']) + 1;
+                inactivePollsOut = Number(docSnap.data()['inactivePolls']);
+              }else { 
+                activePollsOut = Number(docSnap.data()['activePolls']);
+                inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
+              }
+            } else if (changeLabel == 'modified') {
+              totalPollsOut = Number(docSnap.data()['totalPolls']);
+              if(activeIn) {
+                activePollsOut = Number(docSnap.data()['activePolls']) + 1;
+                inactivePollsOut = Number(docSnap.data()['inactivePolls']) - 1;
+              } else {
+                activePollsOut = Number(docSnap.data()['activePolls']) - 1;
+                inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
+              } 
+            } else {
+              console.log("Changed Label not Specified");
+              return;
+            }
             updateDoc(doc(db, 'accountTesting', cid), {
               totalPolls: totalPollsOut,
               activePolls: activePollsOut,

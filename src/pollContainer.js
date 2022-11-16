@@ -1,5 +1,6 @@
 import { onSnapshot, query, where } from "firebase/firestore";
-import { checkPollDoc, noPollsFinishedMessage, noPollsToVoteMessage, noUserCreatedPollsMessage, noVotedOnPollsMessage, pollsRef } from "./database";
+import { checkPollDoc, pollsRef } from "./database";
+import { noPollsFinishedMessage, noPollsToVoteMessage, noUserCreatedPollsMessage, noVotedOnPollsMessage, signInToViewDash } from "./errorMessage";
 import Poll from "./poll";
 import { confirmVote } from "./vote";
 
@@ -64,20 +65,20 @@ export default class PollContainer {
                 // Three Categories to keep track of Added, Modified, and Deleted
                 if (change.type === "added") {
                     pollList.set(change.doc.id,{...change.doc.data(), id: change.doc.id})
-                    this.generatePollListing(change.doc.id, pollList.get(change.doc.id));
+                    //this.generatePollListing(change.doc.id, pollList.get(change.doc.id));
                     console.log("New Poll: ", change.doc.data());
                 }
 
                 if (change.type === "modified") {
                     pollList.set(change.doc.id,{...change.doc.data(), id: change.doc.id})
-                    this.generatePollListing(change.doc.id, pollList.get(change.doc.id));
+                    //this.generatePollListing(change.doc.id, pollList.get(change.doc.id));
                     console.log("Modified Poll: ", change.doc.data());
                    
                 }
 
                 if (change.type === "removed") {
                     pollList.delete(change.doc.id)
-                    this.generatePollListing(change.doc.id, pollList.get(change.doc.id));
+                    //this.generatePollListing(change.doc.id, pollList.get(change.doc.id));
                     console.log("Removed Poll: ", change.doc.data());
                    
                 }
@@ -87,9 +88,16 @@ export default class PollContainer {
             });
 
             this.pollList = pollList;
+            this.displayGeneratedList();
+            this.displayNoPollMessages();
             // Log the Polls Map
             console.log(pollList);
-            this.displayNoPollMessages();
+        });
+    }
+
+    displayGeneratedList() {
+        this.pollList.forEach((value, key) => {
+            this.generatePollListing(key, value);
         });
     }
 

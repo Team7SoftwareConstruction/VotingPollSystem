@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { addDoc } from "firebase/firestore";
 import { auth, logged_user, redirectHome, updateUserDoc } from "./auth";
-import { checkIsActive, displayModal, getCurrTimeFrame, loadData, pollsRef } from "./database";
+import { checkIsActive, displayModal, pollsRef } from "./database";
 import PollContainer from "./pollContainer";
 
 // Get the Poll Creation modal
@@ -140,7 +140,7 @@ function createPollDoc(data) {
             showResults: false
         })
 
-        updateUserDoc(activeIn);
+        updateUserDoc(activeIn, 'added');
         resolve();
     });
 }
@@ -153,9 +153,10 @@ if (createPollForm != null) {
         executeCreatePoll(data)
         .then((e) => {
             displayModal(false, createPollModal);
-            setTimeout(function(){
-                location.reload();
-            },500);
+            setTimeout(() => {
+                createPollForm.reset()
+              }, 500)
+            
         })
     });
 }

@@ -7,6 +7,7 @@ import {
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { updateUserDoc } from './auth';
 
 
 // Your web app's Firebase configuration
@@ -89,55 +90,6 @@ export function loadData(collectionRef, whereVal, whereCompare, whereCompareVal)
     return query(collectionRef, where(whereVal, whereCompare, whereCompareVal));
 }
 
-// Get the Confirmation Vote modal
-var errorMessageModal = document.getElementById("errorMessageModal");
-if (errorMessageModal != null) {
-    // Modal Creation for Confirm Vote Modal
-    var errorMessageModal = new bootstrap.Modal(errorMessageModal, {
-        keyboard: false
-    })
-}
-
-export function signInToVoteMessage() {
-    document.getElementById('errorHeader').innerHTML = "<b style ='color:red;'>Warning</b>"
-    document.getElementById('errorText').innerText = "Using the buttons on the top of the page, you may register or sign in.";
-    document.getElementById('errorTitle').innerText = "Sign In To View Polls";
-    document.getElementById('errorText2').innerText = "";
-    displayModal(true, errorMessageModal)
-}
-
-export function noPollsToVoteMessage() {
-    document.getElementById('errorHeader').innerHTML = "<b style ='color:red;'>Attention</b>"
-    document.getElementById('errorText').innerText = "Looks like there is no Active Polls, or you may have just voted on all Avaliable Active Polls.";
-    document.getElementById('errorTitle').innerText = "No Active Polls";
-    document.getElementById('errorText2').innerText = "You can check back later!";
-    displayModal(true, errorMessageModal)
-}
-
-export function noVotedOnPollsMessage() {
-    document.getElementById('errorHeader').innerHTML = "<b style ='color:red;'>Attention</b>"
-    document.getElementById('errorText').innerText = "Looks like you haven't voted on any Polls";
-    document.getElementById('errorTitle').innerText = "No Voted On Polls";
-    document.getElementById('errorText2').innerHTML = "<b>Click View Active Polls to see any active polls!<b>";
-    displayModal(true, errorMessageModal)
-}
-
-export function noUserCreatedPollsMessage() {
-    document.getElementById('errorHeader').innerHTML = "<b style ='color:red;'>Attention</b>"
-    document.getElementById('errorText').innerText = "Looks like you haven't created any Polls";
-    document.getElementById('errorTitle').innerText = "No Polls Created";
-    document.getElementById('errorText2').innerHTML = "<b>Click Create Poll to start creation!<b>";
-    displayModal(true, errorMessageModal)
-}
-
-export function noPollsFinishedMessage() {
-    document.getElementById('errorHeader').innerHTML = "<b style ='color:red;'>Attention</b>"
-    document.getElementById('errorText').innerText = "Looks like there isn't any polls that reached their deadline";
-    document.getElementById('errorTitle').innerText = "No Finished Polls";
-    document.getElementById('errorText2').innerHTML = "<b>Check back later!<b>";
-    displayModal(true, errorMessageModal)
-}
-
 export function getCurrTimeFrame() {
     let date = new Date();
     let time;
@@ -175,7 +127,6 @@ export function checkPollDoc(startDateIn, startTimeIn, endDateIn, endTimeIn, pol
     let isActive;
     let isOver;
     return new Promise((resolve) => {
-        let pid;
         let q = loadData(pollsRef, '__name__', "==", pollID);
 
         getDocs(q)
@@ -183,7 +134,6 @@ export function checkPollDoc(startDateIn, startTimeIn, endDateIn, endTimeIn, pol
             let polls = [];
             snapshot.docs.forEach((documents) => {
                 polls.push({...documents.data(), id: documents.id});
-                pid = documents.id;
             });
 
             if (polls.length == 0) {
@@ -200,14 +150,19 @@ export function checkPollDoc(startDateIn, startTimeIn, endDateIn, endTimeIn, pol
             if (startDateIn | startTimeIn | endDateIn | endTimeIn | pollID) 
                 return console.log("Error: Checking Results -> Values contained Null");
                 
-            if (pollIsOver)
+            if (pollIsOver) {
                 resolve();
-            isOver = checkIsOver(endDateIn, endTimeIn);
+                return;
+            }
             
-            if (pollActive && isOver)
-                resolve();
+            isOver = checkIsOver(endDateIn, endTimeIn);
+                
             isActive = checkIsActive(startDateIn, startTimeIn);
-        
+
+            if (isActive == pollActive && isOver == pollIsOver) {
+                resolve();
+                return;
+            }
             if (isOver) {
                 pollWinner = getWinner(pollSelections)
                 updatePollDoc(pollID, 'showResults', pollWinner);
@@ -235,6 +190,7 @@ function getWinner(pollSelections) {
 }
 
 function updatePollDoc(pollID, field, winner) {
+    console.log("Performing Update On Document " + pollID)
     let showResultsOut;
     let activeOut;
     switch (field) {
@@ -247,6 +203,8 @@ function updatePollDoc(pollID, field, winner) {
             activeOut = Boolean(true)
             break;
     }
+
+    updateUserDoc(activeOut, 'modified');
     
     updateDoc(doc(db, 'pollTesting', pollID), {
         showResults: showResultsOut,
@@ -288,14 +246,14 @@ export function checkIsActive(startDateIn, startTimeIn) {
     // If the Start Date is the same as Current Date
     if (startDateIn == currTimeFrame.date) {
         // If the Start Time is further away from Current Time then Isn't Active else Is Active
-        if(startTimeIn >= currTimeFrame.time)
+        if(startTimeIn > currTimeFrame.time)
             return false;
         else
             return true;
     }
 
     // Else If the Start Date is further away from the Current Date then Isn't Active
-    else if (startDateIn >= currTimeFrame.date) 
+    else if (startDateIn > currTimeFrame.date) 
         return false;
 
     // Otherwise Is Active
