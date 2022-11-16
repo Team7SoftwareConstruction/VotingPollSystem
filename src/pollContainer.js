@@ -1,5 +1,5 @@
 import { onSnapshot, query, where } from "firebase/firestore";
-import { noPollsToVoteMessage, noVotedOnPollsMessage, pollsRef } from "./database";
+import { checkPollDoc, noPollsFinishedMessage, noPollsToVoteMessage, noUserCreatedPollsMessage, noVotedOnPollsMessage, pollsRef } from "./database";
 import Poll from "./poll";
 import { confirmVote } from "./vote";
 
@@ -7,7 +7,6 @@ export default class PollContainer {
     // This is the Constructor to initialize Poll Data Values and Construct Poll Element
     constructor(webPage, email) {
         this.email = email;
-        console.log(email)
 
         // Keep track of Generated Polls
         this.generatedPolls = 0;
@@ -16,20 +15,25 @@ export default class PollContainer {
         switch(webPage) {
             case "pollsPage":
                 // Get the Query following the Constraints such as isActive, isOwner
-                this.q = query(pollsRef, where("active", "==", true));
+                this.q = query(pollsRef, where("owner", "!=", email));
                 this.showOwned = false;
                 this.showVoted = false;
+                this.showFinished = false;
+                this.activeOnBtn = true;
+                this.page = "pollsPage"
                 break;
             case "myPollsPage":
                 this.q = query(pollsRef, where("owner", "==", email));
                 this.showOwned = true;
                 this.showVoted = false;
+                this.page = "myPollsPage"
                 console.log("Code hasn't been created yet")
                 return;
             case "indexPage":
                 this.q = query(pollsRef, where("totalVotes", ">=", 5));
                 this.showOwned = true;
                 this.showVoted = true;
+                this.page = "indexPage"
                 console.log("Code hasn't been created yet")
                 return;
             default:
@@ -48,6 +52,12 @@ export default class PollContainer {
         // onSnapShot Listener to listen for changes to Documents in the Query
         onSnapshot(this.q, (querySnapshot) => {
             querySnapshot.docChanges().forEach(change => {
+                if (this.page == 'indexPage' && !change.doc.data()['public'])
+                    return;
+
+                // Check if any of the polls need to be changed to Over
+                checkPollDoc(change.doc.data()['startDate'], change.doc.data()['startTime'], change.doc.data()['endDate'], change.doc.data()['endTime'], change.doc.id);
+                
                 // Let Console know of a Write
                 console.log("One Write - Total is now " + writes);
 
@@ -77,10 +87,28 @@ export default class PollContainer {
             });
 
             this.pollList = pollList;
-            this.finished = true;
             // Log the Polls Map
             console.log(pollList);
+            this.displayNoPollMessages();
         });
+    }
+
+    displayNoPollMessages() {
+        switch(this.page) {
+            case "pollsPage":
+                if (this.generatedPolls == 0 && this.votedOnBtn)  {
+                    noVotedOnPollsMessage();
+                } else if (this.generatedPolls == 0 && this.activeOnBtn) {
+                    noPollsToVoteMessage();   
+                } else if (this.generatedPolls == 0 && this.showResultsOnBtn) {
+                    noPollsFinishedMessage();   
+                }
+                break;
+            case "myPollsPage":
+                if (this.generatedPolls == 0)
+                    noUserCreatedPollsMessage();
+                break;
+        }
     }
 
     // This function is used to create a individual Poll Listing
@@ -99,7 +127,7 @@ export default class PollContainer {
         // Go through all Selections of the Current Poll
         pollItem.selections.forEach((selection, idx) => {
             // If Current User isn't a Owner or Hasn't Voted add ability to Vote to Buttons.
-            if (pollItem.owner != this.email && !hasVoted) {
+            if (pollItem.owner != this.email && !hasVoted && !pollItem.showResults) {
                 selectBtns[idx].addEventListener("click", function () { confirmVote(id, selection, idx); });
             }
 
@@ -108,38 +136,33 @@ export default class PollContainer {
         // If the Current Poll Element doesn't exist in the Polls HTML CODE add it to the Poll Listing Element
         if (this.showOwned && pollItem.owner == this.email) {
             pollListing.append(currPoll);
-             // Increase the number of generated Polls.
+            // Increase the number of generated Polls.
             this.generatedPolls++;
         }else if (this.showVoted && hasVoted) {
             pollListing.append(currPoll);
-             // Increase the number of generated Polls.
-             this.generatedPolls++;   
-        }else if (!this.showOwned && !this.showVoted && pollItem.owner != this.email && !hasVoted) {
+            // Increase the number of generated Polls.
+            this.generatedPolls++;   
+        } else if (!this.showOwned && !this.showVoted && !this.showResults && !hasVoted && !pollItem.showResults && pollItem.active) {
             pollListing.append(currPoll);
-             // Increase the number of generated Polls.
-             this.generatedPolls++;
-        }else if (!this.showOwned && this.showVoted && pollItem.owner != this.email && hasVoted) {
-            pollListing.append(currPoll);
-             // Increase the number of generated Polls.
-             this.generatedPolls++;
+            // Increase the number of generated Polls.
+            this.generatedPolls++;  
         }else if (this.showOwned && this.showVoted) {
             pollListing.append(currPoll);
-             // Increase the number of generated Polls.
-             this.generatedPolls++;
+            // Increase the number of generated Polls.
+            this.generatedPolls++;
+        } else if (!this.showOwned && !this.showVoted && this.showResults && pollItem.showResults && !pollItem.active) {
+            pollListing.append(currPoll);
+            // Increase the number of generated Polls.
+            this.generatedPolls++;  
         }
 
         // If Generated Poll is 2 then Row limit has been met, create a divider to create new row and a spacer,
         if(this.generatedPolls % 2 == 0 && this.generatedPolls != 0) {
-            this.generatedPolls = 0;
             let divider = document.createElement("div");
             let spacer = document.createElement("br");
             spacer.className = "w-100";
             divider.className = "w-100";
             pollListing.append(divider, spacer);
-        } else if (this.generatedPolls == 0 && this.votedOnBtn)  {
-                noVotedOnPollsMessage();
-        } else if (this.generatedPolls == 0 &&  this.finished){
-            console.log("No More Active Polls")
         }
     }
 

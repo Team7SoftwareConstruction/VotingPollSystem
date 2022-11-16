@@ -140,17 +140,31 @@ export default class Poll {
             return "";
     }
 
+    getSelectionBoxColor(idx) {
+        if(this.pollData.winner == idx && this.pollData.showResults) 
+            return 'warning'
+        else
+            return 'white'
+    }
+
     // This function is used to create the ENTIRE Selections Element
     createSelectionsElement() {  
+        let selectionColor;
+        let selectionsHeading;
+        if (this.pollData.showResults)
+            selectionsHeading = this.getHeadingElement("Deadline Reached | Winner In Yellow")
+        else 
+            selectionsHeading = this.getHeadingElement("Selections Below")
+
         // Create the Starting Tag for the Entire Selections Element     
-        let selectionsElement = "<div class='bg-white rounded-lg p-5 shadow'>" + this.getHeadingElement("Selections Below") + "<br>";
+        let selectionsElement = "<div class='bg-white rounded-lg p-5 shadow'>" + selectionsHeading + "<br>";
 
         //Go through each selection and make the Individual Selection Element for the Poll.
         this.pollData.selections.forEach((selection, idx) => {
             let selectionElement = this.createSelectionElement(selection, idx) + this.showPercentsElement(selection);
-            
+            selectionColor = this.getSelectionBoxColor(idx)
             // Add the newly created Selection Element to the Entire Selections Element
-            selectionsElement = selectionsElement + "<div class='bg-white rounded-lg p-5 border border-dark rounded shadow-lg'>" + selectionElement + "</div>";
+            selectionsElement = selectionsElement + "<div class='bg-" + selectionColor + " rounded-lg p-5 border border-dark rounded shadow-lg'>" + selectionElement + "</div>";
         })
 
         // Close the Starting Tag and return the Entire Selections Element
@@ -165,7 +179,7 @@ export default class Poll {
         // Gets Votes for Selection if Owner else Blank
         let selVotes = this.getSelVotesElement(selection);
 
-        if(this.hasVoted || this.pollData.owner == this.currUserEmail) {
+        if(this.hasVoted || this.pollData.owner == this.currUserEmail || this.pollData.showResults) {
             return "<div class='row justify-content-center'>"
                 + "<div class='col align-self-center'>"
                 + "<h2 class='display-5 text-center'>" + selection.selectionName + selCheckmark + selVotes + "</h2>"
@@ -193,7 +207,7 @@ export default class Poll {
     // This function is used to get the Selection Checkmark
     getSelCheckmark(idx) {
         // If the Has Voted Selection is equal to the Selection Name return Checkmark else return nothing.
-        if (idx == this.hasVotedSelection)
+        if (idx == this.hasVotedSelection && this.pollData.owner != this.currUserEmail )
             return "<span class='material-icons' style='color: green; padding-left:1rem;'> check_circle </span>";
         else
             return "";
@@ -222,23 +236,32 @@ export default class Poll {
     getStartTimeFrame(isStart) { 
         let date;
         let time;
+        let labelDate;
+        let labelTime;
+        let labelColor;
 
         if (isStart) {
             date = this.pollData.startDate;
             time = this.pollData.startTime;
+            labelDate = 'Start Date';
+            labelTime = 'Start Time';
+            labelColor = 'blue'
         } else {
             date = this.pollData.endDate;
             time = this.pollData.endTime;
+            labelDate = 'End Date';
+            labelTime = 'End Time';
+            labelColor = 'red'
         }
 
         return "<div class='row text-center mt-4'>" 
         + "<div class='col-6 border-right'>"
-        + "<span class='small text-gray'> <b style='color: blue;'>Start Date</b> </span>"
-        + "<div class='h5 font-weight-bold mb-0 text-primary'>" + date + "</div>"
+        + "<span class='small text-gray'> <b style='color: "+ labelColor + ";'>" + labelDate + "</b> </span>"
+        + "<div class='h5 font-weight-bold mb-0' style='color: "+ labelColor + ";'>" + date + "</div>"
         + "</div>"
         + "<div class='col-6'>"
-        + "<span class='small text-gray'><b style='color: blue;'>Start Time</b></span>"
-        + "<div class='h5 font-weight-bold mb-0 text-primary'>" + time + "</div>"
+        + "<span class='small text-gray'><b style='color: "+ labelColor + ";'>" + labelTime + "</b></span>"
+        + "<div class='h5 font-weight-bold mb-0' style='color: "+ labelColor + ";'>" + time + "</div>"
         + "</div>"
         + "</div>"
     }

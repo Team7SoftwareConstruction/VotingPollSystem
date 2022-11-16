@@ -2,7 +2,7 @@
 // Import Statements for Polls Js
 import { doc, getDocs, updateDoc } from "firebase/firestore";
 import { logged_user } from "./auth";
-import { accountsRef, db, displayModal, loadData, pollsRef } from "./database";
+import { accountsRef, checkVotingPollFinished, db, displayModal, loadData, pollsRef } from "./database";
 
 
 // Get the Confirmation Vote modal
@@ -33,6 +33,11 @@ export function confirmVote(id, selection, idx){
 
 // This function is used to add the Vote to Account and Poll Documents in Firebase
 export async function addVoteToDatabase (id, selectionIdx) {
+    let isOver = checkVotingPollFinished(id);
+    if (isOver) {
+        console.log("Could not submit Vote since poll was finished");
+        return;
+    }
      //Add Vote to Poll Document
      await addVoteToPoll(selectionIdx, id);
 

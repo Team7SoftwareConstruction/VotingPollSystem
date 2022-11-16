@@ -2,11 +2,11 @@
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, redirectHome } from "./auth";
-import { signInToVoteMessage } from "./database";
 import PollContainer from "./pollContainer";
 
 const viewVotedOnPolls = document.getElementById('viewVotedOnPollsBtn')
 const viewActivePolls = document.getElementById('viewActivePollsBtn')
+const viewPublicPollsResults = document.getElementById('viewPublicPollsResultBtn')
 
 var pollContainer;
 
@@ -31,15 +31,11 @@ if (viewActivePolls) {
         console.log("View Active");
         pollContainer.showOwned = false;
         pollContainer.showVoted = false;
+        pollContainer.showResults = false;
         pollContainer.votedOnBtn = false;
-        pollContainer.generatedPolls = 0;
-        document.getElementById('pollListing').remove();
-        const newPollListing = document.createElement("div")
-        newPollListing.className = "row";
-        newPollListing.id = 'pollListing';
-        const appendTo = document.getElementById('appendTo');
-        appendTo.append(newPollListing);
-        pollContainer.generatePolls();
+        pollContainer.showResultsOnBtn = false;
+        pollContainer.activeOnBtn = true;
+        resetPollListing();
     })
 };
 
@@ -48,15 +44,35 @@ if (viewVotedOnPolls) {
     viewVotedOnPolls.addEventListener('click', (event) =>  {
         pollContainer.showOwned = false;
         pollContainer.showVoted = true;
+        pollContainer.showResults = false;
         pollContainer.votedOnBtn = true;
-        pollContainer.generatedPolls = 0;
-        document.getElementById('pollListing').remove();
-        const newPollListing = document.createElement("div")
-        newPollListing.className = "row";
-        newPollListing.id = 'pollListing';
-        const appendTo = document.getElementById('appendTo');
-        appendTo.append(newPollListing);
-        pollContainer.generatePolls();
+        pollContainer.showResultsOnBtn = false;
+        pollContainer.activeOnBtn = false;
+        resetPollListing();
     });
+}
+
+if (viewPublicPollsResults) {
+  viewPublicPollsResults.addEventListener('click', (event) =>  {
+      pollContainer.showOwned = false;
+      pollContainer.showVoted = false;
+      pollContainer.showResults = true;
+      pollContainer.votedOnBtn = false;
+      pollContainer.showResultsOnBtn = true;
+      pollContainer.activeOnBtn = false;
+      resetPollListing();
+      
+  });
+}
+
+function resetPollListing() {
+  pollContainer.generatedPolls = 0;
+  document.getElementById('pollListing').remove();
+  const newPollListing = document.createElement("div")
+  newPollListing.className = "row";
+  newPollListing.id = 'pollListing';
+  const appendTo = document.getElementById('appendTo');
+  appendTo.append(newPollListing);
+  pollContainer.generatePolls();
 }
   

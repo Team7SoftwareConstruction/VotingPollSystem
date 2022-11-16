@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { addDoc } from "firebase/firestore";
 import { auth, logged_user, redirectHome, updateUserDoc } from "./auth";
-import { displayModal, loadData, pollsRef } from "./database";
+import { checkIsActive, displayModal, getCurrTimeFrame, loadData, pollsRef } from "./database";
 import PollContainer from "./pollContainer";
 
 // Get the Poll Creation modal
@@ -52,7 +52,6 @@ if (startDate != null) {
         if(startDate.value == "")
             defaultMin();
         else {
-            console.log(startDate.value)
             setAtt('min', endDate, startDate.value)
             changedFrameVals();
         }
@@ -84,10 +83,8 @@ if (endTime != null) {
 function changedFrameVals() {
     if(startDate.value == endDate.value) {
         setAtt('min', endTime, startTime.value)
-        console.log("SAME")
     } else {
         setAtt('min', endTime, '00:00')
-        console.log("DIFF")
     }
     
 }
@@ -107,33 +104,6 @@ function defaultMin() {
     document.getElementById('endDate').setAttribute('min', today);
 }
 
-function compareTimeFrame(startDateIn, startTimeIn) {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-    var yyyy = today.getFullYear();
-    var nn = String(today.getMinutes()).padStart(2, '0');
-    var hh = String(today.getHours()).padStart(2, '0');
-    var currtime = hh + ':' + nn;
-    console.log(currtime);
-    today = yyyy + '-' + mm + '-' + dd;
-
-    console.log(startDateIn.value)
-    console.log(today);
-
-    if (startDateIn.value == today) {
-        if(startTimeIn.value > currtime)
-            return false;
-        else
-            return true;
-    } else if (startDateIn.value > today) {
-        return false;
-
-    } else {
-        return true;   
-    }
-}
-
 
 function createPollDoc(data) {
     return new Promise((resolve) => {
@@ -146,12 +116,11 @@ function createPollDoc(data) {
                     'selectionName':value,
                     'votes': 0
                 }
-                console.log(currentSelection);
                 selectionsList.push(currentSelection);
             }  
         }
 
-        activeIn = compareTimeFrame(createPollForm.startDate, createPollForm.startTime);
+        activeIn = checkIsActive(createPollForm.startDate.value, createPollForm.startTime.value);
         let isPublic = createPollForm.viewStatus.value == "true";
         let showPercent = createPollForm.viewPercent.value == "true";
 
@@ -167,7 +136,8 @@ function createPollDoc(data) {
             totalVotes: 0,
             selections: selectionsList,
             voters: [],
-            active: activeIn
+            active: activeIn,
+            showResults: false
         })
 
         updateUserDoc(activeIn);
