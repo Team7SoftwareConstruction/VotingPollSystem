@@ -1,6 +1,6 @@
 // Checks that the Confirm Vote Poll Modal exists
 // Import Statements for Polls Js
-import { doc, getDocs, updateDoc } from "firebase/firestore";
+import { doc, getDocs, runTransaction, Transaction, updateDoc } from "firebase/firestore";
 import { logged_user } from "./auth";
 import { accountsRef, checkVotingPollFinished, db, displayModal, loadData, pollsRef } from "./database";
 
@@ -39,10 +39,10 @@ export async function addVoteToDatabase (id, selectionIdx) {
         return;
     }
      //Add Vote to Poll Document
-     await addVoteToPoll(selectionIdx, id);
+     addVoteToPoll(selectionIdx, id);
 
      // Add Vote to Account Document
-     await addVoteToAccount(selectionIdx, id);
+     addVoteToAccount(selectionIdx, id);
 
      displayModal(false, confirmVoteModal);
 
@@ -53,32 +53,40 @@ export async function addVoteToDatabase (id, selectionIdx) {
 
 // This function is change Account Document in Firebase in reference to the Vote that occured
 export function addVoteToAccount(selectionIdx, pollID) {
-    return new Promise((resolve) => {
-        // Variable for the Account Document ID
-        var cid;
+    // Variable for the Account Document ID
+    let cid;
 
-        // Use Database Function for particular query of documents equal to the Current User Email
-        let q = loadData(accountsRef, 'email', "==", logged_user.email);
-        getDocs(q)
-        .then((snapshot) =>{
-            // Get all Users in array
-            let users = [];
-            snapshot.docs.forEach((documents) => {
-                users.push({...documents.data(), id: documents.id});
-                cid = documents.id;
-            });
+    // Use Database Function for particular query of documents equal to the Current User Email
+    let q = loadData(accountsRef, 'email', "==", logged_user.email);
+    getDocs(q)
+    .then((snapshot) =>{
+        // Get all Users in array
+        let users = [];
+        snapshot.docs.forEach((documents) => {
+            users.push({...documents.data(), id: documents.id});
+            cid = documents.id;
+        });
 
-            // If users is 0 then return -1 in error
-            if (users.length == 0) {
-                return -1;
+        // If users is 0 then return -1 in error
+        if (users.length == 0) {
+            return -1;
+        }
+
+        updateFirebaseUserVoteDoc(cid, selectionIdx, pollID);
+    })
+}
+
+async function updateFirebaseUserVoteDoc(cid, selectionIdx, pollID) {
+    try {
+        const accountRef = doc(db, 'accountTesting', cid);
+        await runTransaction(db, async (transaction) => {
+            const accountDoc = await transaction.get(accountRef);
+            if (!accountDoc.exists()) {
+                throw "Document does not exist!";
             }
 
-            // Return the one user which should be the Current User Document
-            return users[0];
-        })
-        .then((user) => {
             // Get previous VoteOn array of Current User
-            const votedOn = user.votedOn;
+            const votedOn = accountDoc.data().votedOn;
 
             // Make a new Vote based on Confirmed Vote
             var current_vote = {
@@ -88,46 +96,55 @@ export function addVoteToAccount(selectionIdx, pollID) {
 
             // Add confirmed vote to VoteOn Array
             votedOn.push(current_vote);
-            
-            // Update the Document in Firebase using the cid and newly updated VoteOn
-            updateDoc(doc(db, 'accountTesting', cid), {
+
+            transaction.update(accountRef, {
                 votedOn: votedOn
-            })
+            });
         })
-        .then((e) => {
-            resolve();
-        })
-    });
+        console.log("Vote Transaction successfully committed!");
+    } catch (e) {
+    console.log("Vote Transaction failed: ", e);
+  }
 }
+       
 
 
 // This function is change Poll Document in Firebase in reference to the Vote that occured
 export function addVoteToPoll(selectionIdx, pollID) {
-    console.log("ADDING VOTE TO POLL")
-    return new Promise((resolve) => {
-        // This isn't fully documented but follows the same flow but for Poll Documents as above function addVoteToAccount.
-        console.log(pollID);
-        var pid;
-        let q = loadData(pollsRef, '__name__', "==", pollID);
+    let pid;
+    let q = loadData(pollsRef, '__name__', "==", pollID);
+    getDocs(q)
+    .then((snapshot) =>{
+        let polls = [];
+        snapshot.docs.forEach((documents) => {
+            polls.push({...documents.data(), id: documents.id});
+            pid = documents.id;
+        });
 
-        getDocs(q)
-        .then((snapshot) =>{
-            let polls = [];
-            snapshot.docs.forEach((documents) => {
-                polls.push({...documents.data(), id: documents.id});
-                pid = documents.id;
-            });
+        if (polls.length == 0) {
+            return -1;
+        }
+        updateFirebasePollVoteDoc(pid, selectionIdx);
+    })
+}
 
-            if (polls.length == 0) {
-                return -1;
+async function updateFirebasePollVoteDoc(pid, selectionIdx) {
+    let voters;
+    let selections;
+    let totalVotes;
+    let current_voter;
+    try {
+        const pollRef = doc(db, 'pollTesting', pid);
+        await runTransaction(db, async (transaction) => {
+            const pollDoc = await transaction.get(pollRef);
+            if (!pollDoc.exists()) {
+                throw "Document does not exist!";
             }
-            return polls[0];
-        })
-        .then((poll) => {
-            var voters = poll.voters;
-            var selections = poll.selections;
-            var totalVotes = poll.totalVotes;
-            var current_voter = {
+
+            voters = pollDoc.data().voters;
+            selections = pollDoc.data().selections;
+            totalVotes = pollDoc.data().totalVotes;
+            current_voter = {
                 "selectionIdx": selectionIdx,
                 "voterEmail": logged_user.email
             }
@@ -137,15 +154,14 @@ export function addVoteToPoll(selectionIdx, pollID) {
                 }
             })
             voters.push(current_voter);
-
-            updateDoc(doc(db, 'pollTesting', pid), {
+            transaction.update(pollRef, {
                 voters: voters,
                 totalVotes: totalVotes + 1,
-                selections: selections
-            })
+                selections: selections   
+            });
         })
-        .then((e) => {
-            resolve();
-        })
-    });
+        console.log("Vote Transaction successfully committed!");
+    } catch (e) {
+        console.log("Vote Transaction failed: ", e);
+    }
 }

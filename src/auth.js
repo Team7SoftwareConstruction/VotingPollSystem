@@ -5,7 +5,7 @@ import {
   // Import References to Firebase Auth Exports
   signOut, getAuth, onAuthStateChanged,
 } from "firebase/auth";
-import { doc, getDoc, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs, onSnapshot, runTransaction, writeBatch } from "firebase/firestore";
 import { accountsRef, app, db, loadData } from "./database";
 import { showModals } from "./loginForms";
 
@@ -146,50 +146,62 @@ function setCurrentUserInfo() {
 }
 
   // Function to Update Current Account Doc used when Poll is Created.
-export function updateUserDoc(activeIn, changeLabel) {
-  return new Promise((resolve) => {
-    let totalPollsOut;
-    let activePollsOut;
-    let inactivePollsOut;
+export function updateUserDoc(activeIn, changeLabel, owner) {
     let cid;
-    let q = loadData(accountsRef, 'email', "==", logged_user.email);
+    let q = loadData(accountsRef, 'email', "==", owner);
     getDocs(q)
     .then((snapshot) =>{
       snapshot.docs.forEach((documents) => {
         cid = documents.id;
         console.log(cid);
-        getDoc(doc(db,'accountTesting',cid)).then(docSnap=> {
-          if(docSnap.exists()) {
-            if (changeLabel == 'added') {
-              totalPollsOut = Number(docSnap.data()['totalPolls']) - 1;
-              if(activeIn) {
-                activePollsOut = Number(docSnap.data()['activePolls']) + 1;
-                inactivePollsOut = Number(docSnap.data()['inactivePolls']);
-              }else { 
-                activePollsOut = Number(docSnap.data()['activePolls']);
-                inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
-              }
-            } else if (changeLabel == 'modified') {
-              totalPollsOut = Number(docSnap.data()['totalPolls']);
-              if(activeIn) {
-                activePollsOut = Number(docSnap.data()['activePolls']) + 1;
-                inactivePollsOut = Number(docSnap.data()['inactivePolls']) - 1;
-              } else {
-                activePollsOut = Number(docSnap.data()['activePolls']) - 1;
-                inactivePollsOut = Number(docSnap.data()['inactivePolls']) + 1;
-              } 
-            } else {
-              console.log("Changed Label not Specified");
-              return;
-            }
-            updateDoc(doc(db, 'accountTesting', cid), {
-              totalPolls: totalPollsOut,
-              activePolls: activePollsOut,
-              inactivePolls: inactivePollsOut
-            })
-          }
-        })
+        updateFirebaseUserDoc(cid, activeIn, changeLabel);
       })
-    })  
-  });
+    });
+}
+
+async function updateFirebaseUserDoc (cid, activeIn, changeLabel) {
+  let totalPollsOut;
+  let activePollsOut;
+  let inactivePollsOut;
+  try {
+    const accountRef = doc(db, 'accountTesting', cid);
+    await runTransaction(db, async (transaction) => {
+      const accountDoc = await transaction.get(accountRef);
+      if (!accountDoc.exists()) {
+        throw "Document does not exist!";
+      }
+
+      if (changeLabel == 'added') {
+        totalPollsOut = Number(accountDoc.data()['totalPolls']) - 1;
+        if(activeIn) {
+          activePollsOut = Number(accountDoc.data()['activePolls']) + 1;
+          inactivePollsOut = Number(accountDoc.data()['inactivePolls']);
+        }else { 
+          activePollsOut = Number(accountDoc.data()['activePolls']);
+          inactivePollsOut = Number(accountDoc.data()['inactivePolls']) + 1;
+        }
+      } else if (changeLabel == 'modified') {
+        totalPollsOut = Number(accountDoc.data()['totalPolls']);
+        if(activeIn) {
+          activePollsOut = Number(accountDoc.data()['activePolls']) + 1;
+          inactivePollsOut = Number(accountDoc.data()['inactivePolls']) - 1;
+        } else {
+          activePollsOut = Number(accountDoc.data()['activePolls']) - 1;
+          inactivePollsOut = Number(accountDoc.data()['inactivePolls']) + 1;
+        } 
+      } else {
+        console.log("Changed Label not Specified");
+        return;
+      }
+  
+      transaction.update(accountRef, {
+        totalPolls: totalPollsOut,
+        activePolls: activePollsOut,
+        inactivePolls: inactivePollsOut
+      });
+    });
+    console.log("Account Doc Transaction successfully committed!");
+  } catch (e) {
+    console.log("Account Doc Transaction failed: ", e);
+  }
 }

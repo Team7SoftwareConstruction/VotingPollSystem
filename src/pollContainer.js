@@ -89,7 +89,6 @@ export default class PollContainer {
 
             this.pollList = pollList;
             this.displayGeneratedList();
-            this.displayNoPollMessages();
             // Log the Polls Map
             console.log(pollList);
         });

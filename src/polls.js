@@ -2,6 +2,7 @@
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, redirectHome } from "./auth";
+import { checkPollDoc } from "./database";
 import PollContainer from "./pollContainer";
 
 const viewVotedOnPolls = document.getElementById('viewVotedOnPollsBtn')
@@ -9,6 +10,7 @@ const viewActivePolls = document.getElementById('viewActivePollsBtn')
 const viewPublicPollsResults = document.getElementById('viewPublicPollsResultBtn')
 
 var pollContainer;
+let checkID;
 
 onAuthStateChanged(auth,(user)=>{
     /* USER IS LOGGED IN */
@@ -24,7 +26,17 @@ onAuthStateChanged(auth,(user)=>{
       /* If Logged User isn't Null Display Logoff Message */
 
     }
-  })
+});
+
+checkID = setInterval(checkPollUpdates, 60000);
+
+function checkPollUpdates() {
+    console.log("Checking For Updates");
+    pollContainer.pollList.forEach((value, key) => {
+      // Check if any of the polls need to be changed to Over
+      checkPollDoc(value['startDate'], value['startTime'], value['endDate'], value['endTime'], key);
+    });
+  }
 
 if (viewActivePolls) {
     viewActivePolls.addEventListener('click', (event) =>  {

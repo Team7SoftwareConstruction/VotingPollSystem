@@ -45,6 +45,8 @@ export default class Poll {
         // Get the Selections of the Poll Element
         let htmlPollSelections = this.createSelectionsElement();
 
+        let percentBar = this.createFullPercentBar();
+
         // Construct the HTML Code of the created Poll Element using the info elements.
         $(newPoll).html("<div class='bg-white rounded-lg p-5 shadow'>"
              + hasVotedLabel
@@ -54,6 +56,7 @@ export default class Poll {
              + startTimeFrame
              + "<br>"
              + htmlPollSelections
+             + percentBar
              + endTimeFrame
              + pollActiveDetails
              + "</div>");
@@ -141,20 +144,39 @@ export default class Poll {
     }
 
     getSelectionBoxColor(idx) {
-        if(this.pollData.winner == idx && this.pollData.showResults) 
-            return 'warning'
-        else
-            return 'white'
+        let color;
+        if(this.pollData.winner.includes(idx) && this.pollData.winner.length > 1 && this.pollData.showResults) {
+            color = 'warning'
+        }else if(this.pollData.winner.includes(idx) && this.pollData.showResults) {
+            color = 'success'
+        }else {
+            color = 'white'
+        }
+        
+        return color
+    }
+
+    createFullPercentBar () {
+        let fullBar = '<div class="row"><div class="progress">';
+        //Go through each selection and make the Individual Selection Element for the Poll.
+        this.pollData.selections.forEach((selection, idx) => {
+            fullBar = fullBar + this.showPercentsElementRevised(selection);
+        })
+        fullBar = fullBar + '</div></div>';
+        return fullBar;
     }
 
     // This function is used to create the ENTIRE Selections Element
     createSelectionsElement() {  
         let selectionColor;
         let selectionsHeading;
-        if (this.pollData.showResults)
-            selectionsHeading = this.getHeadingElement("Deadline Reached | Winner In Yellow")
-        else 
+        if (this.pollData.winner.length > 1 && this.pollData.showResults) {
+            selectionsHeading = this.getHeadingElement("Deadline Reached | Tie in Yellow ")
+        }else if (this.pollData.winner.length == 1 && this.pollData.showResults){
+            selectionsHeading = this.getHeadingElement("Deadline Reached | Winner In Green")
+        }else {
             selectionsHeading = this.getHeadingElement("Selections Below")
+        }
 
         // Create the Starting Tag for the Entire Selections Element     
         let selectionsElement = "<div class='bg-white rounded-lg p-5 shadow'>" + selectionsHeading + "<br>";
@@ -179,7 +201,7 @@ export default class Poll {
         // Gets Votes for Selection if Owner else Blank
         let selVotes = this.getSelVotesElement(selection);
 
-        if(this.hasVoted || this.pollData.owner == this.currUserEmail || this.pollData.showResults) {
+        if(this.hasVoted || this.pollData.owner == this.currUserEmail || (this.pollData.showResults && this.pollData.public)) {
             return "<div class='row justify-content-center'>"
                 + "<div class='col align-self-center'>"
                 + "<h2 class='display-5 text-center'>" + selection.selectionName + selCheckmark + selVotes + "</h2>"
@@ -187,7 +209,7 @@ export default class Poll {
         } else {
             return "<div class='row justify-content-center'>"
                 + "<div class='col align-self-center'>"
-                + "<h2 class='display-5'>" + selection.selectionName + "</h2>"
+                + "<h2 class='display-5'>" +  selection.selectionName + "</h2>"
                 + "</div>"
                 + "<div class='col align-self-center'>"
                 + "<button type='button' class='btn btn-warning'>VOTE</button>"
@@ -207,7 +229,7 @@ export default class Poll {
     // This function is used to get the Selection Checkmark
     getSelCheckmark(idx) {
         // If the Has Voted Selection is equal to the Selection Name return Checkmark else return nothing.
-        if (idx == this.hasVotedSelection && this.pollData.owner != this.currUserEmail )
+        if (idx == this.hasVotedSelection && this.hasVoted )
             return "<span class='material-icons' style='color: green; padding-left:1rem;'> check_circle </span>";
         else
             return "";
@@ -231,6 +253,18 @@ export default class Poll {
         }
         return "";
     }
+
+        // This function is used to show the Percents of this Poll.
+        showPercentsElementRevised(selection) {        
+            // If the Total Votes is more than 0 and this poll was set to Show Percent
+            if(this.pollData.totalVotes > 0 && this.pollData.viewPercent) {
+                var votePct = ((Number(selection.votes) * 100) / Number(this.pollData.totalVotes)).toFixed(2);
+    
+                return "<div class='progress-bar-striped progress-bar-animated bg-primary' role='progressbar' style='width: " + votePct + "%; height: 2rem; color: blue;' aria-valuenow='" + votePct + "' aria-valuemin='0' aria-valuemax='100'><p style='visibility:hidden'>" + votePct + "</p>"
+                + "</div>";
+            }
+            return "";
+        }
 
     // This function is used to get the Time Frame for Start and End (Time & Date)
     getStartTimeFrame(isStart) { 

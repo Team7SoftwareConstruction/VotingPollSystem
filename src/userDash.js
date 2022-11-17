@@ -1,7 +1,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { addDoc } from "firebase/firestore";
 import { auth, logged_user, redirectHome, updateUserDoc } from "./auth";
-import { checkIsActive, displayModal, pollsRef } from "./database";
+import { checkIsActive, checkPollDoc, displayModal, pollsRef } from "./database";
 import PollContainer from "./pollContainer";
 
 // Get the Poll Creation modal
@@ -19,11 +19,14 @@ const limit = 12;
 // Next Added Selection Val
 var i = 2;
 
+let checkID;
+
 // Elements for Form of Poll Creation
 const startDate = document.getElementById('startDate');
 const endDate = document.getElementById('endDate');
 const startTime = document.getElementById('startTime');
 const endTime = document.getElementById('endTime');
+var pollContainer
 
 
 onAuthStateChanged(auth,(user)=>{
@@ -31,7 +34,7 @@ onAuthStateChanged(auth,(user)=>{
     if (user) {
       /* Logged_user becomes who is currently signed in */
       // Import Statements for Polls Js
-      const pollContainer = new PollContainer("myPollsPage", user.email);
+      pollContainer = new PollContainer("myPollsPage", user.email);
       pollContainer.generatePolls();
 
     /* USER ISN'T LOGGED IN */
@@ -41,6 +44,16 @@ onAuthStateChanged(auth,(user)=>{
 
     }
   })
+
+checkID = setInterval(checkPollUpdates, 10000);
+
+function checkPollUpdates() {
+    console.log("Checking For Updates");
+    pollContainer.pollList.forEach((value, key) => {
+      // Check if any of the polls need to be changed to Over
+      checkPollDoc(value['startDate'], value['startTime'], value['endDate'], value['endTime'], key);
+    });
+  }
   
 
 // Set the Default Mins to Current Day
@@ -136,11 +149,12 @@ function createPollDoc(data) {
             totalVotes: 0,
             selections: selectionsList,
             voters: [],
+            winner: [-1],
             active: activeIn,
             showResults: false
         })
 
-        updateUserDoc(activeIn, 'added');
+        updateUserDoc(activeIn, 'added', logged_user.email);
         resolve();
     });
 }

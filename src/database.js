@@ -1,7 +1,7 @@
 console.log("Page is running Database Js v1.0");
 
 import {
-    getFirestore, collection, query, onSnapshot, where, updateDoc, doc, getDocs,
+    getFirestore, collection, query, onSnapshot, where, doc, getDocs, runTransaction,
 } from 'firebase/firestore';
 
 
@@ -30,10 +30,11 @@ const firebaseConfig = {
 
   // References to collections
   const pollsRef = collection(db, "pollTesting");
-  const accountsRef = collection(db, "accountTesting")
+  const accountsRef = collection(db, "accountTesting");
 
   // Export References to use outside of this JavaScript File
   export { pollsRef, accountsRef, app, db}
+  
 
   // Master Function to add Table Data based on Ref, Table Name, and Column Headers
   export function createCollectionArray(collectionRef, tableName, colNames) {
@@ -145,7 +146,8 @@ export function checkPollDoc(startDateIn, startTimeIn, endDateIn, endTimeIn, pol
             let pollIsOver = poll.showResults;
             let pollActive = poll.active;
             let pollSelections = poll.selections;
-            let pollWinner;
+            let pollOwner = poll.owner;
+            let pollWinner = [];
     
             if (startDateIn | startTimeIn | endDateIn | endTimeIn | pollID) 
                 return console.log("Error: Checking Results -> Values contained Null");
@@ -165,9 +167,9 @@ export function checkPollDoc(startDateIn, startTimeIn, endDateIn, endTimeIn, pol
             }
             if (isOver) {
                 pollWinner = getWinner(pollSelections)
-                updatePollDoc(pollID, 'showResults', pollWinner);
+                updatePollDoc(pollID, 'showResults', pollWinner, pollOwner);
             }else if (isActive)
-                updatePollDoc(pollID, 'active', -1);    
+                updatePollDoc(pollID, 'active', [-1], pollOwner);    
         })
         .then((e) => {
             resolve();
@@ -176,41 +178,69 @@ export function checkPollDoc(startDateIn, startTimeIn, endDateIn, endTimeIn, pol
 }
 
 function getWinner(pollSelections) {
+    let currWinnerVotes = -1;
+    let totalWinners = [];
+
     if (pollSelections == null)
         return -1;
-    let currWinnerVotes = -1;
-    let currentWinnerIdx = -1;
+
     pollSelections.forEach((selection, idx) => {
-        if(selection.votes > currWinnerVotes) {
+        if(selection.votes > currWinnerVotes) 
             currWinnerVotes = selection.votes
-            currentWinnerIdx = idx
-        }
     })
-    return currentWinnerIdx;
+    totalWinners = checkForTie(pollSelections, currWinnerVotes);
+
+    return totalWinners;
 }
 
-function updatePollDoc(pollID, field, winner) {
+function checkForTie(pollSelections, currWinnerVotes){
+    let totalWinners = []
+
+    if (pollSelections == null)
+        return -1;
+
+    pollSelections.forEach((selection, idx) => {
+        if(selection.votes == currWinnerVotes) 
+            totalWinners.push(idx);
+    })
+    return totalWinners;
+}
+
+async function updatePollDoc(pollID, field, winner, pollOwner) {
     console.log("Performing Update On Document " + pollID)
     let showResultsOut;
     let activeOut;
-    switch (field) {
-        case 'showResults':
-            showResultsOut = Boolean(true),
-            activeOut = Boolean(false)
-            break;
-        case 'active':
-            showResultsOut = Boolean(false),
-            activeOut = Boolean(true)
-            break;
-    }
+    try {
+        const pollRef = doc(db, 'pollTesting', pollID);
+        await runTransaction(db, async (transaction) => {
+            const pollDoc = await transaction.get(pollRef);
+            if (!pollDoc.exists()) {
+                throw "Document does not exist!";
+            }
 
-    updateUserDoc(activeOut, 'modified');
-    
-    updateDoc(doc(db, 'pollTesting', pollID), {
-        showResults: showResultsOut,
-        active: activeOut,
-        winner: winner
-    });
+            switch (field) {
+                case 'showResults':
+                    showResultsOut = Boolean(true),
+                    activeOut = Boolean(false)
+                    break;
+                case 'active':
+                    showResultsOut = Boolean(false),
+                    activeOut = Boolean(true)
+                    break;
+            }
+
+            updateUserDoc(activeOut, 'modified', pollOwner);
+
+            transaction.update(pollRef, {
+                showResults: showResultsOut,
+                active: activeOut,
+                winner: winner
+            });
+        });
+        console.log("Poll Winner Transaction successfully committed!");
+    } catch (e) {
+        console.log("Poll Winner Transaction failed: ", e);
+    }
 }
 
 
