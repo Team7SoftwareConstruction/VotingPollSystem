@@ -14,7 +14,7 @@ export var createPollBtn = document.getElementById("createPollBtn");
 const createPollForm = document.getElementById('createPollForm');
 
 // MAX Selections
-const limit = 12;
+const limit = 5;
 
 // Next Added Selection Val
 var i = 2;
@@ -95,7 +95,16 @@ if (endTime != null) {
 
 function changedFrameVals() {
     if(startDate.value == endDate.value) {
-        setAtt('min', endTime, startTime.value)
+        console.log(startTime.value);
+        let arr;
+        let hour;
+        let minTime;
+        arr = startTime.value.split(":");
+        hour = Number(arr[0]) + 1;
+        console.log(arr[0][0])
+        minTime = hour + ":" + arr[1];
+        console.log(minTime);
+        setAtt('min', endTime, minTime)
     } else {
         setAtt('min', endTime, '00:00')
     }

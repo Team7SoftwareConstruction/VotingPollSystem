@@ -28,18 +28,19 @@
     <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="register" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content bg-light">
+                <div id="errorMessage" class="modal-body"></div>
                 <!-- Modal content -->
                 <form id="signUpLive" style="text-align: center; margin: auto; width: 220px;" class="p-3">
                     <h3 style="color:black;">Register</h3>
                     <label style="color:black;" for="email">Email</label>
                     <input type="email" id="email" required><br>
-                    <small id="emailHelp" class="form-text text-white">We'll never share your email.</small>
+                    <small id="emailHelp" class="form-text text-black">We'll never share your email.</small>
                     <hr>
                     <label style="color:black;" for="password">Password</label>
                     <input type="password" id="signUpPassword" minlength="6" maxlength="16" required><br><input type="checkbox" onclick="showPass('signUpPassword')"><span style="color:black; font-size: small;"> Show Password</span>
                     <hr>
                     <label style="color:black;" for="phone">Phone Number</label><br>
-                    <input type="tel" id="phone" name="phone" placeholder="915-000-0000" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required><br><hr>
+                    <input type="tel" id="phone" name="phone" placeholder="915-000-0000" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" autofocus required title="###-###-####"><br><hr>
                     <label style="color:black;" for="fName">First Name</label>
                     <input type="text" id="fName" minlength="1" maxlength="750"required><br><hr>
                     <label style="color:black;" for="lName">Last Name</label>
@@ -50,11 +51,11 @@
         </div>
     </div>
 
-
     <!-- Sign In Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="signUpModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content bg-light">
+                <div id="errorMessage2" class="modal-body"></div>
                 <!-- Modal content -->
                 <form id="loginLive" style="text-align: center; margin: auto; width: 220px;" class="p-3">
                     <h3 style="color:black;">Sign In</h3>
@@ -69,6 +70,22 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function showPass(passwordVal) {
+            let x
+            if (passwordVal == 'signUpPassword') {
+                x = document.getElementById("signUpPassword");
+            } else {
+                x = document.getElementById("signInPassword");
+            }
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
 
     <!-- START OF Navigation -->
     <nav>
@@ -202,6 +219,10 @@
 
             <div class ="row justify-content-center">
                 <h5 class=" text-center p-1"> Polls with FIVE or more Total Votes will show up here <hr></h5>
+            </div>
+
+            <div id="appendTo">
+        
             </div>
 
             <!-- START OF Row to contain Poll Listing -->

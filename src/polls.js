@@ -47,7 +47,7 @@ if (viewActivePolls) {
         pollContainer.votedOnBtn = false;
         pollContainer.showResultsOnBtn = false;
         pollContainer.activeOnBtn = true;
-        resetPollListing();
+        pollContainer.resetPollListing();
     })
 };
 
@@ -60,7 +60,7 @@ if (viewVotedOnPolls) {
         pollContainer.votedOnBtn = true;
         pollContainer.showResultsOnBtn = false;
         pollContainer.activeOnBtn = false;
-        resetPollListing();
+        pollContainer.resetPollListing();
     });
 }
 
@@ -71,21 +71,9 @@ if (viewPublicPollsResults) {
       pollContainer.showResults = true;
       pollContainer.votedOnBtn = false;
       pollContainer.showResultsOnBtn = true;
-      pollContainer.activeOnBtn = false;
-      resetPollListing();
-      
+      pollContainer.activeOnBtn = false; 
+      pollContainer.resetPollListing();     
   });
 }
 
-function resetPollListing() {
-  pollContainer.generatedPolls = 0;
-  document.getElementById('pollListing').remove();
-  const newPollListing = document.createElement("div")
-  newPollListing.className = "row";
-  newPollListing.id = 'pollListing';
-  const appendTo = document.getElementById('appendTo');
-  appendTo.append(newPollListing);
-  pollContainer.displayGeneratedList();
-  pollContainer.displayNoPollMessages();
-}
   

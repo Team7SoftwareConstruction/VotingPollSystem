@@ -88,7 +88,7 @@ export default class PollContainer {
             });
 
             this.pollList = pollList;
-            this.displayGeneratedList();
+            this.resetPollListing();
             // Log the Polls Map
             console.log(pollList);
         });
@@ -99,6 +99,18 @@ export default class PollContainer {
             this.generatePollListing(key, value);
         });
     }
+
+    resetPollListing() {
+        this.generatedPolls = 0;
+        document.getElementById('pollListing').remove();
+        const newPollListing = document.createElement("div")
+        newPollListing.className = "row";
+        newPollListing.id = 'pollListing';
+        const appendTo = document.getElementById('appendTo');
+        appendTo.append(newPollListing);
+        this.displayGeneratedList();
+        this.displayNoPollMessages();
+      }
 
     displayNoPollMessages() {
         switch(this.page) {
@@ -144,12 +156,12 @@ export default class PollContainer {
         if (this.showOwned && pollItem.owner == this.email) {
             pollListing.append(currPoll);
             // Increase the number of generated Polls.
-            this.generatedPolls++;
+            this.generatedPolls++
         }else if (this.showVoted && hasVoted) {
             pollListing.append(currPoll);
             // Increase the number of generated Polls.
             this.generatedPolls++;   
-        } else if (!this.showOwned && !this.showVoted && !this.showResults && !hasVoted && !pollItem.showResults && pollItem.active) {
+        } else if (!this.showOwned && !this.showVoted && !this.showResults && !hasVoted && pollItem.active) {
             pollListing.append(currPoll);
             // Increase the number of generated Polls.
             this.generatedPolls++;  
@@ -157,7 +169,7 @@ export default class PollContainer {
             pollListing.append(currPoll);
             // Increase the number of generated Polls.
             this.generatedPolls++;
-        } else if (!this.showOwned && !this.showVoted && this.showResults && pollItem.showResults && !pollItem.active) {
+        } else if (!this.showOwned && !this.showVoted && this.showResults &&!hasVoted && pollItem.public && !pollItem.active) {
             pollListing.append(currPoll);
             // Increase the number of generated Polls.
             this.generatedPolls++;  

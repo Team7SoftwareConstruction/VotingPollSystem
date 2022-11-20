@@ -113,8 +113,18 @@ function createUserDoc() {
             addedUserDoc();
         })
         .catch((error)=>{
-            console.log(error);
-            console.error();
+            if(document.getElementById('errorM') == null) {
+                let errorM = document.createElement("div");
+                errorM.innerHTML = '<div id="errorM" class="alert alert-warning alert-dismissible fade show text-center" role="alert">'
+                + '<p>Email already associated to an Account</p><p>Try a different Email!</p>'
+                + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                + '<span aria-hidden="true">&times;</span>'
+                + '</button>'
+                + '</div>';
+                document.getElementById('errorMessage').append(errorM);
+            }
+                console.log(error);
+                console.error();
         })
     });
 }
@@ -122,16 +132,17 @@ function createUserDoc() {
 
 // Gets Register Form and if it exist allows the code to execute
 const registerForm = document.getElementById('signUpLive');
+const phone = document.getElementById('phone');
 if (registerForm != null) {
     //let alert = document.getElementById("validSignUpAlert")
     registerForm.addEventListener('submit',async (event)=>{
         event.preventDefault();
         await createUserDoc()
-        .then((e) => {
-            setTimeout(function(){
-                location.reload();
-            },500);
-        })
+        
+        displayModal(false, registerModal);
+        setTimeout(function(){
+            registerForm.reset();
+        },5000);
     });    
 }
 
@@ -148,16 +159,50 @@ if(loginForm != null) {
             const uid = userCred.user.uid
             console.log(userCred.user.email + " Signed In");
             displayModal(false, loginModal);
-    
-            // Get Token and Change View
-            loginForm.reset();
 
             setTimeout(function(){
-                location.reload();
-            },1000);
+                loginForm.reset();
+            },5000);
         })
         .catch((error)=>{
+                let errorM2 = document.createElement("div");
+                errorM2.innerHTML = '<div id="errorM2" class="alert alert-warning alert-dismissible fade show text-center" role="alert">'+error+'</p>'
+                + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                + '<span aria-hidden="true">&times;</span>'
+                + '</button>'
+                + '</div>';
+                document.getElementById('errorMessage2').append(errorM2);
             console.log(error);
         })
     });
 }
+
+const fName = document.getElementById('fName');
+const lName = document.getElementById('lName');
+if(fName, lName, phone != null) {
+    fName.onchange = function() {
+        console.log("No Spaces Allowed");
+        fName.value = fName.value.replace(/\s/g, "");
+        fName.value = fName.value.replace(/[0-9]/g, '');
+    };
+
+    lName.onchange = function() {
+        console.log("No Spaces Allowed");
+        lName.value = lName.value.replace(/\s/g, "");
+        lName.value = lName.value.replace(/[0-9]/g, '');
+    };
+
+    phone.onkeyup = function() {
+        if (phone.value.length > 12) {
+            phone.value = phone.value.substring(0, 12);
+        }
+        phone.value = phone.value.replace(/[^\d-]/g, '')
+    };
+
+    phone.onkeydown = function(e) {
+        if ((phone.value.length == 3 || phone.value.length == 7) && e.key !== "Backspace" && e.key!== "-" ) {
+            phone.value = phone.value + '-';
+        }
+    };
+}
+
