@@ -17,23 +17,25 @@ export default class PollContainer {
             case "pollsPage":
                 // Get the Query following the Constraints such as isActive, isOwner
                 this.q = query(pollsRef, where("owner", "!=", email));
-                this.showOwned = false;
+                this.activeOnBtn = true;
+                this.showActive = true;
                 this.showVoted = false;
                 this.showFinished = false;
-                this.activeOnBtn = true;
                 this.page = "pollsPage"
                 break;
             case "myPollsPage":
                 this.q = query(pollsRef, where("owner", "==", email));
+                this.activeOnBtn = true;
                 this.showOwned = true;
                 this.showVoted = false;
+                this.showActive = true;
+                this.showFinished = false;
                 this.page = "myPollsPage"
                 console.log("Code hasn't been created yet")
                 return;
             case "indexPage":
                 this.q = query(pollsRef, where("totalVotes", ">=", 5));
-                this.showOwned = true;
-                this.showVoted = true;
+                this.showHome = true;
                 this.page = "indexPage"
                 console.log("Code hasn't been created yet")
                 return;
@@ -153,27 +155,48 @@ export default class PollContainer {
         })
 
         // If the Current Poll Element doesn't exist in the Polls HTML CODE add it to the Poll Listing Element
-        if (this.showOwned && pollItem.owner == this.email) {
+        if (this.showActive && pollItem.active && !this.showFinished && !this.showVoted && !hasVoted && !this.showOwned && this.email != pollItem.owner) {
             pollListing.append(currPoll);
             // Increase the number of generated Polls.
-            this.generatedPolls++
-        }else if (this.showVoted && hasVoted) {
-            pollListing.append(currPoll);
-            // Increase the number of generated Polls.
-            this.generatedPolls++;   
-        } else if (!this.showOwned && !this.showVoted && !this.showResults && !hasVoted && pollItem.active) {
-            pollListing.append(currPoll);
-            // Increase the number of generated Polls.
-            this.generatedPolls++;  
-        }else if (this.showOwned && this.showVoted) {
-            pollListing.append(currPoll);
-            // Increase the number of generated Polls.
-            this.generatedPolls++;
-        } else if (!this.showOwned && !this.showVoted && this.showResults &&!hasVoted && pollItem.public && !pollItem.active) {
-            pollListing.append(currPoll);
-            // Increase the number of generated Polls.
-            this.generatedPolls++;  
+            this.generatedPolls++; 
         }
+        else if (this.showVoted && hasVoted && this.showActive && pollItem.active && !this.showFinished && !pollItem.finished && !this.showOwned && this.email != pollItem.owner) {
+            pollListing.append(currPoll);
+            // Increase the number of generated Polls.
+            this.generatedPolls++; 
+        }
+        else if (this.showVoted && hasVoted && !this.showActive && !pollItem.active && this.showFinished && pollItem.showResults && !this.showOwned && this.email != pollItem.owner) {
+            pollListing.append(currPoll);
+            // Increase the number of generated Polls.
+            this.generatedPolls++; 
+        }
+        else if (this.showFinished && pollItem.showResults && !this.showVoted && !hasVoted && !this.showActive && !pollItem.active && pollItem.public && !this.showOwned && this.email != pollItem.owner) {
+            pollListing.append(currPoll);
+            // Increase the number of generated Polls.
+            this.generatedPolls++; 
+        }
+        else if (this.showOwned && this.email == pollItem.owner && !this.showVoted && !hasVoted && !this.showActive && !pollItem.active && !this.showFinished && !pollItem.showResults) {
+            pollListing.append(currPoll);
+            // Increase the number of generated Polls.
+            this.generatedPolls++; 
+        }
+        else if (this.showOwned && this.email == pollItem.owner && !this.showVoted && !hasVoted && this.showActive && pollItem.active && !this.showFinished && !pollItem.showResults) {
+            pollListing.append(currPoll);
+            // Increase the number of generated Polls.
+            this.generatedPolls++; 
+        }
+        else if (this.showOwned && this.email == pollItem.owner && !this.showVoted && !hasVoted && !this.showActive && !pollItem.active && this.showFinished && pollItem.showResults) {
+            pollListing.append(currPoll);
+            // Increase the number of generated Polls.
+            this.generatedPolls++; 
+        }
+        else if (this.showHome) {
+            pollListing.append(currPoll);
+            // Increase the number of generated Polls.
+            this.generatedPolls++; 
+        }
+        
+        
 
         // If Generated Poll is 2 then Row limit has been met, create a divider to create new row and a spacer,
         if(this.generatedPolls % 2 == 0 && this.generatedPolls != 0) {

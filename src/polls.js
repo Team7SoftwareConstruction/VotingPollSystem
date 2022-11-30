@@ -1,6 +1,7 @@
 // Modified, Documented by Jesus Macias 
 
 import { onAuthStateChanged } from "firebase/auth";
+import { event } from "jquery";
 import { auth, redirectHome } from "./auth";
 import { checkPollDoc } from "./database";
 import PollContainer from "./pollContainer";
@@ -8,6 +9,9 @@ import PollContainer from "./pollContainer";
 const viewVotedOnPolls = document.getElementById('viewVotedOnPollsBtn')
 const viewActivePolls = document.getElementById('viewActivePollsBtn')
 const viewPublicPollsResults = document.getElementById('viewPublicPollsResultBtn')
+const votedOnActiveStatus = document.getElementById('votedOnActiveStatus')
+const votedOnActiveBtn = document.getElementById('votedOnActive')
+const votedOnInactiveBtn = document.getElementById('votedOnInactive')
 
 var pollContainer;
 let checkID;
@@ -40,13 +44,14 @@ function checkPollUpdates() {
 
 if (viewActivePolls) {
     viewActivePolls.addEventListener('click', (event) =>  {
-        console.log("View Active");
-        pollContainer.showOwned = false;
-        pollContainer.showVoted = false;
-        pollContainer.showResults = false;
+        pollContainer.activeOnBtn = true;
         pollContainer.votedOnBtn = false;
         pollContainer.showResultsOnBtn = false;
-        pollContainer.activeOnBtn = true;
+        pollContainer.showOwned = false;
+        pollContainer.showActive = true;
+        pollContainer.showVoted = false;
+        pollContainer.showFinished = false;
+        votedOnActiveStatus.style = 'display:none'
         pollContainer.resetPollListing();
     })
 };
@@ -54,24 +59,53 @@ if (viewActivePolls) {
 
 if (viewVotedOnPolls) {
     viewVotedOnPolls.addEventListener('click', (event) =>  {
-        pollContainer.showOwned = false;
-        pollContainer.showVoted = true;
-        pollContainer.showResults = false;
+      pollContainer.activeOnBtn = false;
         pollContainer.votedOnBtn = true;
         pollContainer.showResultsOnBtn = false;
-        pollContainer.activeOnBtn = false;
+        pollContainer.showOwned = false;
+        pollContainer.showActive = true;
+        pollContainer.showVoted = true;
+        pollContainer.showFinished = false;
+        votedOnActiveStatus.style = ''
         pollContainer.resetPollListing();
+    });
+
+    votedOnActiveBtn.addEventListener('click', (event) => {
+      pollContainer.activeOnBtn = false;
+      pollContainer.votedOnBtn = true;
+      pollContainer.showResultsOnBtn = false;
+      pollContainer.showOwned = false;
+      pollContainer.showActive = true;
+      pollContainer.showVoted = true;
+      pollContainer.showFinished = false;
+      votedOnActiveStatus.style = ''
+      pollContainer.resetPollListing();
+    });
+
+    votedOnInactiveBtn.addEventListener('click', (event) => {
+      pollContainer.activeOnBtn = false;
+      pollContainer.votedOnBtn = true;
+      pollContainer.showResultsOnBtn = false;
+      pollContainer.showOwned = false;
+      console.log("Inactive");
+      pollContainer.showActive = false;
+      pollContainer.showVoted = true;
+      pollContainer.showFinished = true;
+      votedOnActiveStatus.style = ''
+      pollContainer.resetPollListing();
     });
 }
 
 if (viewPublicPollsResults) {
   viewPublicPollsResults.addEventListener('click', (event) =>  {
-      pollContainer.showOwned = false;
-      pollContainer.showVoted = false;
-      pollContainer.showResults = true;
+    pollContainer.activeOnBtn = false;
       pollContainer.votedOnBtn = false;
       pollContainer.showResultsOnBtn = true;
-      pollContainer.activeOnBtn = false; 
+      pollContainer.showOwned = false;
+      pollContainer.showActive = false;
+      pollContainer.showVoted = false;
+      pollContainer.showFinished = true;
+      votedOnActiveStatus.style = 'display:none'
       pollContainer.resetPollListing();     
   });
 }

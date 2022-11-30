@@ -9,6 +9,9 @@ export var createPollModal = document.getElementById("createPollModal");
 
 // Get the button that opens the Poll Creation modal
 export var createPollBtn = document.getElementById("createPollBtn");
+const myInactiveBtn = document.getElementById("myInactive");
+const myActiveBtn = document.getElementById("myActive");
+const myFinishedBtn = document.getElementById("myFinished");
 
 // Get the Form for Creating a Poll
 const createPollForm = document.getElementById('createPollForm');
@@ -126,6 +129,46 @@ function defaultMin() {
     document.getElementById('endDate').setAttribute('min', today);
 }
 
+function displayCreateError() {
+    if(document.getElementById('errorM2') != null) {
+        return
+    }
+    let error = "<p>Please check Selections!</p><p>1) Make sure Selections are different</p><p>2) Make sure Selections aren't blank</p><p>3) Make sure Selections are less than 20 characters</p>"
+    let errorM2 = document.createElement("div");
+                errorM2.innerHTML = '<div id="errorM2" class="alert alert-warning alert-dismissible fade show text-center" role="alert">'+error+'</p>'
+                + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                + '<span aria-hidden="true">&times;</span>'
+                + '</button>'
+                + '</div>';
+                document.getElementById('errorMessageCreatePoll').append(errorM2);
+}
+
+function checkSelectionFormat(data) {
+    return new Promise((resolve, reject) => {
+        let compare = [];
+        for (const [key, value] of Object.entries(data)) {
+            if(key.substring(0,3) == "sel") {
+                let tempValue = value.replace(/\s/g, "");
+                console.log(tempValue);
+                if (tempValue == "" || tempValue.length > 20){
+                    displayCreateError()
+                    reject("Error");
+                }
+                if(compare.length > 0) {
+                    compare.forEach(element => {
+                        if(element == tempValue) {
+                            displayCreateError()
+                            reject("Error");
+                        }
+                    });
+                }
+                compare.push(tempValue);
+            }  
+        }
+        resolve("Success!");
+    });
+}
+
 
 function createPollDoc(data) {
     return new Promise((resolve) => {
@@ -173,20 +216,21 @@ if (createPollForm != null) {
     createPollForm.addEventListener('submit',(event) => {
         event.preventDefault();
         const data = Object.fromEntries(new FormData(createPollForm).entries());
-        executeCreatePoll(data)
-        .then((e) => {
-            displayModal(false, createPollModal);
-            setTimeout(() => {
-                createPollForm.reset()
-              }, 500)
-            
-        })
+          checkSelectionFormat(data).then(
+            (value) => {
+                console.log(value)
+                createPollDoc(data);
+                console.log(value);
+                displayModal(false, createPollModal);
+                setTimeout(() => {
+                    createPollForm.reset()
+                }, 500)   
+            },
+            (reason) => {
+              console.log(reason); // Error!
+            },
+          ); 
     });
-}
-
-async function executeCreatePoll(data) {
-    await createPollDoc(data);
-    
 }
 
 // Checks that the Create Poll Modal exists
@@ -224,3 +268,37 @@ $("body").on("click", "#DeleteRow", function () {
     $(this).parents("#row").remove();
 })
 
+if (myInactiveBtn | myActiveBtn | myFinishedBtn != null) {
+    myInactiveBtn.addEventListener('click', (event) => {
+        pollContainer.showOwned = true;
+        pollContainer.showVoted = false;
+        pollContainer.showActive = false;
+        pollContainer.showFinished = false;
+        myInactiveBtn.className = 'btn btn-secondary btn-lg active'
+        myActiveBtn.className = 'btn btn-secondary btn-lg'
+        myFinishedBtn.className = 'btn btn-secondary btn-lg'
+        pollContainer.resetPollListing();
+    });
+
+    myActiveBtn.addEventListener('click', (event) =>  {
+        pollContainer.showOwned = true;
+        pollContainer.showVoted = false;
+        pollContainer.showActive = true;
+        pollContainer.showFinished = false;
+        myActiveBtn.className = 'btn btn-secondary btn-lg active'
+        myInactiveBtn.className = 'btn btn-secondary btn-lg'
+        myFinishedBtn.className = 'btn btn-secondary btn-lg'
+        pollContainer.resetPollListing();
+    });
+
+    myFinishedBtn.addEventListener('click', (event) => {
+        pollContainer.showOwned = true;
+        pollContainer.showVoted = false;
+        pollContainer.showActive = false;
+        pollContainer.showFinished = true;
+        myFinishedBtn.className = 'btn btn-secondary btn-lg active'
+        myActiveBtn.className = 'btn btn-secondary btn-lg'
+        myInactiveBtn.className = 'btn btn-secondary btn-lg'
+        pollContainer.resetPollListing();
+    });
+}

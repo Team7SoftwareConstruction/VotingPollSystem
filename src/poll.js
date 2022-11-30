@@ -107,7 +107,7 @@ export default class Poll {
 
     createTitleHeader() {
         let activeColor
-        if (this.pollData.showResults) {
+        if (this.pollData.showResults || !this.pollData.active) {
             activeColor = 'danger'
         } else {
             activeColor = 'success'
@@ -246,27 +246,32 @@ export default class Poll {
         // Close the Starting Tag and return the Entire Selections Element
         return selectionsElement + "</div>";
     }
+    
 
     // This function is used to create the INDIVIDUAL Selection Element
     createSelectionElement (selection, idx) {
         let votingElement;
         let selName;
+        let isVisible;
         // Gets Checkmark if Voted else Blank
         let selCheckmark = this.getSelCheckmark(idx);
 
         // Gets Votes for Selection if Owner else Blank
         let selVotes = this.getSelVotesElement(selection);
 
-        let selIndex = this.getSelIndex(idx, 'title');
+        
         if (this.pollData.showResults && this.pollData.winner.includes(idx)) {
-            selName = "<p>" + selection.selectionName + "</p>"
+            selName = "<p class='display-3'>" + selection.selectionName + "</p>"
+            isVisible = true
         } else if (this.pollData.showResults && !this.pollData.winner.includes(idx)) {
-            selName = "<s>" + selection.selectionName + "</s>"
+            selName = "<s class='text-muted'>" + selection.selectionName + "</s>"
+            isVisible = false
         } else {
+            isVisible = true
             selName = selection.selectionName
         }
 
-        selName = this.getHeadingElement(selName);
+        let selIndex = this.getSelIndex(idx, 'title', isVisible);
 
         if(this.hasVoted || this.pollData.owner == this.currUserEmail || (this.pollData.showResults && this.pollData.public)) {
             votingElement = "";
@@ -278,14 +283,20 @@ export default class Poll {
 
         return "<div class='d-flex justify-content-around'>"
                 + "<div class='col'>"
-                + "<h1 class=' text-center text-border' style='-webkit-text-stroke-width: 1.15px;-webkit-text-stroke-color: black'>" + selIndex + selName + selCheckmark + selVotes + "</h1>"
+                + "<h1 class='display-3 text-center text-border' >" + selIndex + selName + selCheckmark + selVotes + "</h1>"
                 + "</div>"+votingElement+"</div>"
     }
 
     // This function is used to display the index of the Selection.
-    getSelIndex(idx, opt){
+    getSelIndex(idx, opt, addOpt){
+        let selIdxStyle;
         if (opt == 'title') {
-            return "<div class='col'><span class='badge badge-pill badge-dark'><b>Selection " + (idx + 1) + "   </b></span></div>"
+            if(addOpt) {
+                selIdxStyle= "style='opacity:0.99;'";
+            } else {
+                selIdxStyle = "style='opacity:0.50; text-decoration: line-through;'"
+            }
+            return "<div class='col'><span class='badge badge-pill badge-dark' "+selIdxStyle+"><b>Selection " + (idx + 1) + "   </b></span></div>"
         }
         else {
             return "<span class='badge badge-pill badge-dark'><b>" + (idx + 1) + "</b></span></div><span class='material-icons'>keyboard_double_arrow_down</span>"

@@ -193,6 +193,14 @@
                 </button>
             </div>
         </div>
+        <div class="row justify-content-center text-center">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-secondary btn-lg" id="myInactive">Inactive</button>
+                <button type="button" class="btn btn-secondary btn-lg active" id="myActive">Active</button>
+                <button type="button" class="btn btn-secondary btn-lg" id="myFinished">Finished</button>
+            </div>
+        </div>
+    
 
         <div class ="row justify-content-center">
             <h2 class="display-2 p-3"> My Polls <hr></h2>
@@ -245,6 +253,7 @@
                     <div class="modal-dialog" role="document">
 
                         <div class="modal-content">
+                            <div id="errorMessageCreatePoll" class="modal-body"></div>
 
                             <div class="row justify-content-center">
                                 <h2 class="display-4">Poll Creator</h2>
