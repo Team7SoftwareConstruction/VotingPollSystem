@@ -131,7 +131,7 @@ export default class Poll {
     // This function is used to create the Poll Div Element
     createPollElement() {
         // Check to see if poll has already been made.
-        var currPoll = document.getElementById(this.id);
+        let currPoll = document.getElementById(this.id);
 
         // If Current Poll doesn't exist, make new Div element and set attributes.
         if (currPoll == null) {
@@ -330,7 +330,7 @@ export default class Poll {
     
         // If the Total Votes is more than 0 and this poll was set to Show Percent
         if(this.pollData.totalVotes > 0 && this.pollData.viewPercent) {
-            var votePct = ((Number(selection.votes) * 100) / Number(this.pollData.totalVotes)).toFixed(2);
+            let votePct = ((Number(selection.votes) * 100) / Number(this.pollData.totalVotes)).toFixed(2);
             let votePctElement = "<h4 style='text-left'>" + votePct + "%</h4>"
 
             return "<br><div class='row'><div class ='col'>" + votePctElement + "</div>"
@@ -357,7 +357,7 @@ export default class Poll {
             let selIdx = this.getSelIndex(idx, 'percent');
             // If the Total Votes is more than 0 and this poll was set to Show Percent
             if(this.pollData.totalVotes > 0 && this.pollData.viewPercent && selection.votes > 0) {
-                var votePct = ((Number(selection.votes) * 100) / Number(this.pollData.totalVotes)).toFixed(2);
+                let votePct = ((Number(selection.votes) * 100) / Number(this.pollData.totalVotes)).toFixed(2);
     
                 return "<div style='width: " + votePct + "%;'><div class='col'>"+selIdx+"</div>";
             }
@@ -405,6 +405,9 @@ export default class Poll {
         let hour = time[0] + time[1];
         let min = time[3] + time[4];
         hour = Number(hour);
+        if (hour == 0) {
+            hour = 12;
+        }
         if(hour > 12) {
             hour = hour % 12;
             timeFrame = " PM MDT"

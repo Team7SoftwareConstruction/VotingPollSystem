@@ -5,10 +5,10 @@ import { checkIsActive, checkPollDoc, displayModal, pollsRef } from "./database"
 import PollContainer from "./pollContainer";
 
 // Get the Poll Creation modal
-export var createPollModal = document.getElementById("createPollModal");
+export let createPollModal = document.getElementById("createPollModal");
 
 // Get the button that opens the Poll Creation modal
-export var createPollBtn = document.getElementById("createPollBtn");
+export let createPollBtn = document.getElementById("createPollBtn");
 const myInactiveBtn = document.getElementById("myInactive");
 const myActiveBtn = document.getElementById("myActive");
 const myFinishedBtn = document.getElementById("myFinished");
@@ -20,7 +20,7 @@ const createPollForm = document.getElementById('createPollForm');
 const limit = 5;
 
 // Next Added Selection Val
-var i = 2;
+let i = 2;
 
 let checkID;
 
@@ -29,7 +29,7 @@ const startDate = document.getElementById('startDate');
 const endDate = document.getElementById('endDate');
 const startTime = document.getElementById('startTime');
 const endTime = document.getElementById('endTime');
-var pollContainer
+let pollContainer
 
 
 onAuthStateChanged(auth,(user)=>{
@@ -120,10 +120,10 @@ function setAtt(att, timeFrame, attVal) {
 
 
 function defaultMin() {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-    var yyyy = today.getFullYear();
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    let yyyy = today.getFullYear();
     today = yyyy + '-' + mm + '-' + dd;
     document.getElementById('startDate').setAttribute('min', today);
     document.getElementById('endDate').setAttribute('min', today);
@@ -177,7 +177,7 @@ function createPollDoc(data) {
         let selectionsList = [];
         for (const [key, value] of Object.entries(data)) {
             if(key.substring(0,3) == "sel") {
-                var currentSelection = {
+                let currentSelection = {
                     'selectionName':value,
                     'votes': 0
                 }
@@ -236,7 +236,7 @@ if (createPollForm != null) {
 // Checks that the Create Poll Modal exists
 if (createPollModal != null) {
     // Modal Creation for Poll Creation
-    var createPollModal = new bootstrap.Modal(createPollModal, {
+    createPollModal = new bootstrap.Modal(createPollModal, {
         keyboard: false
     })
 

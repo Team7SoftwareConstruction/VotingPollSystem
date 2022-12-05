@@ -13,13 +13,13 @@ import { showModals } from "./loginForms";
 const accountInfoContainer = document.getElementById('accountInfoContainer');
 
 // Variables to define current user and role 
-export var logged_user;
-var logged_role;
+export  let logged_user;
+let logged_role;
 
 // Export and declare Auth, using the init = InitializeApp(firebaseConfig); 
 export const auth = getAuth(app);
 
-export var cid;
+export let cid;
 
 // Modified by Jesus Macias 
 // Get the current state of who is signed in or out.
@@ -80,8 +80,6 @@ export function redirectHome(type) {
 
   // If on LocalHost then
   if(loc.substring(0, 5) == "/dist") {
-    // Remove extra path
-    loc = window.location.pathname.substring(5)
     // local host is being viewed
     localhost = 1;
   }

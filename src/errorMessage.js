@@ -1,10 +1,10 @@
 import { displayModal } from "./database";
 
 // Get the Confirmation Vote modal
-var errorMessageModal = document.getElementById("errorMessageModal");
+let errorMessageModal = document.getElementById("errorMessageModal");
 if (errorMessageModal != null) {
     // Modal Creation for Confirm Vote Modal
-    var errorMessageModal = new bootstrap.Modal(errorMessageModal, {
+    errorMessageModal = new bootstrap.Modal(errorMessageModal, {
         keyboard: false
     })
 }

@@ -6,12 +6,12 @@ import { accountsRef, checkVotingPollFinished, db, displayModal, loadData, polls
 
 
 // Get the Confirmation Vote modal
-export var confirmVoteModal = document.getElementById("confirmVoteModal");
+export let confirmVoteModal = document.getElementById("confirmVoteModal");
 
 
 if (confirmVoteModal != null) {
     // Modal Creation for Confirm Vote Modal
-    var confirmVoteModal = new bootstrap.Modal(confirmVoteModal, {
+    confirmVoteModal = new bootstrap.Modal(confirmVoteModal, {
         keyboard: false
     })
 }
@@ -89,7 +89,7 @@ async function updateFirebaseUserVoteDoc(cid, selectionIdx, pollID) {
             const votedOn = accountDoc.data().votedOn;
 
             // Make a new Vote based on Confirmed Vote
-            var current_vote = {
+            let current_vote = {
                 "selectionIdx": selectionIdx,
                 "pollID": pollID
             }

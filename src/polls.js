@@ -13,7 +13,7 @@ const votedOnActiveStatus = document.getElementById('votedOnActiveStatus')
 const votedOnActiveBtn = document.getElementById('votedOnActive')
 const votedOnInactiveBtn = document.getElementById('votedOnInactive')
 
-var pollContainer;
+let pollContainer;
 let checkID;
 
 onAuthStateChanged(auth,(user)=>{

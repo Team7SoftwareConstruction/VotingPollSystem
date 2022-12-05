@@ -50,7 +50,7 @@ export default class PollContainer {
     generatePolls() {
         // Keep track of the writes
         let writes = 1;
-        var pollList = new Map();
+        let pollList = new Map();
 
         // onSnapShot Listener to listen for changes to Documents in the Query
         onSnapshot(this.q, (querySnapshot) => {

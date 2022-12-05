@@ -6,19 +6,19 @@ import { auth } from "./auth";
 /* Modified, Documented by Jesus Macias */
 
 // Get the Login Modal
-export var loginModal = document.getElementById("loginModal");
+export let loginModal = document.getElementById("loginModal");
 
 // Get the Register Modal
-export var registerModal = document.getElementById('registerModal');
+export let registerModal = document.getElementById('registerModal');
 
 // Get the button that opens the Login Modal
-export var loginBtn = document.getElementById("loginBtn");
+export const loginBtn = document.getElementById("loginBtn");
 
 // Get the button that opens the Register Modal
-export var registerBtn = document.getElementById("registerBtn");
+export const registerBtn = document.getElementById("registerBtn");
 
 // Get the Change User Btn
-export var changeUserBtn = document.getElementById('changeUserBtn');
+export const changeUserBtn = document.getElementById('changeUserBtn');
 
 // Code for logging out
 const signOutForm = document.getElementById('signOutLive');
@@ -41,12 +41,12 @@ if (signOutForm != null) {
 // Checks that the Login and Register Modals exist
 if (loginModal != null) {
     // Modal Creation for Login System
-    var loginModal = new bootstrap.Modal(loginModal, {
+    loginModal = new bootstrap.Modal(loginModal, {
         keyboard: false
     })
 
     // Modal Creation for Register Sytem
-    var registerModal = new bootstrap.Modal(registerModal, {
+    registerModal = new bootstrap.Modal(registerModal, {
         keyboard: false
     })
 

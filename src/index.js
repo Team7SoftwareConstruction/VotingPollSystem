@@ -3,7 +3,7 @@ import { auth } from "./auth";
 import { signInMessage } from "./errorMessage";
 import PollContainer from "./pollContainer";
 
-var pollContainer;
+let pollContainer;
 
 onAuthStateChanged(auth,(user)=>{
     /* USER IS LOGGED IN */
