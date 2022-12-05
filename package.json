@@ -1,0 +1,31 @@
+{
+  "name": "votingpollsystem",
+  "version": "1.0.0",
+  "description": "This is for Team 7 Software Construction Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jmacias17/VotingPollSystem.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jmacias17/VotingPollSystem/issues"
+  },
+  "homepage": "https://github.com/Jmacias17/VotingPollSystem#readme",
+  "devDependencies": {
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.2",
+    "firebase": "^9.13.0",
+    "firebase-admin": "^11.2.0",
+    "jquery": "^3.6.1"
+  }
+}
